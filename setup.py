@@ -7,6 +7,7 @@ setup(
     author='Nicolas Lara',
     author_email='nicolaslara@gmail.com',
     url='https://github.com/lincolnloop/django-geotagging-new',
+    #install_requires=[''],
     packages=find_packages(),
     classifiers=[
         'Development Status :: 3 - Alpha',
