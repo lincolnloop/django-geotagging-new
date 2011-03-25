@@ -1,6 +1,3 @@
-This app should eventually be stripped off from the project and be
-packaged as a reusable app.
-
 ==============
  Installation
 ==============
