@@ -96,14 +96,15 @@ The list of waypoints can be provided in two ways:
    In this case, the request will look something like this::
       http://localhost:8000/geotagging/optimize/?model=attractions.Attraction&ids=1,3,2
  * A list of locations separated by `|`:
-   The locations can be either names or lat long objects. The request will look like this::
+   The locations can be either names or lat-long objects. The request will look like one of these::
        http://localhost:8000/geotagging/optimize/?locations=lund|kastrup|lomma|malmo|kopenhamn
-   or::
-      http://localhost:8000/geotagging/optimize/?locations=55.71002017356669,13.169603345421381|55.599056501542002,13.008327481804296|55.68450435788013,12.573595044746435
+       http://localhost:8000/geotagging/optimize/?locations=55.71002017356669,13.169603345421381|55.599056501542002,13.008327481804296|55.68450435788013,12.573595044746435
 
 The result is always returned in terms of what was specified in the
 request. This means that for the previous three requests the response
-would be::
+would be
+
+1)::
 
     {
     optimal_order: [
@@ -114,7 +115,7 @@ would be::
     success: true
     }
     
-
+2)::
     {
     -optimal_order: [
     "u'lund'"
@@ -126,6 +127,7 @@ would be::
     success: true
     }
     
+and 3)::
 
     {
     -optimal_order: [
