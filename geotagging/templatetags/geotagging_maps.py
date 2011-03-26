@@ -31,6 +31,7 @@ class MapObjects(InclusionTag):
     )
 
     def get_context(self, context, objects, width, height, zoom):
+        import ipdb; ipdb.set_trace()
         self.geotagging_map_counter = getattr(self, 'geotagging_map_counter', 0) + 1
         id = self.geotagging_map_counter
         if isinstance(objects, PointGeoTag):
