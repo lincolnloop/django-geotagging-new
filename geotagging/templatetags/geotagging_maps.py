@@ -1,6 +1,8 @@
 from django import template
 from django.template.loader import render_to_string
 from django.db.models.query import QuerySet
+from django.conf import settings
+from django.contrib.gis.geos import Point
 
 from classytags.core import Options
 from classytags.arguments import Argument
@@ -30,7 +32,7 @@ class MapObjects(InclusionTag):
         Argument('zoom', default='16', required=False)
     )
 
-    def get_context(self, context, objects, width, height, zoom):
+    def get_context(self, context, objects, width, height, zoom, center):
         context['request'].session['geotagging_map_counter'] = (
             context['request'].session.get('geotagging_map_counter', 0) + 1)
         id = context['request'].session['geotagging_map_counter']
@@ -41,7 +43,13 @@ class MapObjects(InclusionTag):
             latlng = objects
             markers = [{'latlng':latlng}]
         elif isinstance(objects, QuerySet) or isinstance(objects, list):
-            latlng = objects[0].get_point_coordinates(as_string=True, inverted=True)
+            if len(objects) == 0:
+                centroid = Point(13.0043792701320360, 55.5996869012237553)
+            if not getattr(settings, 'USE_GEOGRAPHY', True):
+                centroid = objects.collect().envelope.centroid
+            else:
+                centroid = objects[0].geotagging_point
+            latlng = (centroid.y, centroid.x)
             markers = [{'latlng': i.get_point_coordinates(as_string=True, inverted=True),
                         'object': i} for i in objects]
         else:
