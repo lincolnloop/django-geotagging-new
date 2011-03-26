@@ -31,7 +31,7 @@ def google_TSP_call(waypoints):
     destination = w_destination = waypoints.pop()
     coordinates = waypoints
 
-    if isinstance(waypoints[0]_, PointGeoTag):
+    if isinstance(waypoints[0], PointGeoTag):
         coordinates = [i.get_point_coordinates(as_string=True, inverted=True) 
                        for i in waypoints]
 
