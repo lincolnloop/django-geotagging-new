@@ -15,7 +15,7 @@
     <!-- Map creation script -->
     <script type="text/javascript">
         function initialize_map_{{ map_id }}() {
-            var latlng = new google.maps.LatLng({{ lat }}, {{ long }});
+            var latlng = new google.maps.LatLng({{ LatLng }});
             var mapElem = document.getElementById("map-canvas-{{ map_id }}");
 
             {% block map_options_js %}
@@ -43,3 +43,5 @@
         {% endblock %}
     </script>
 {% endblock %}
+
+test

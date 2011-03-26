@@ -61,8 +61,8 @@ class GeotaggingMapNode(template.Node):
                     'map_id': '1',
                     'width': self.width,
                     'height': self.height,
-                    'lat':'55.6845043579',
-                    'long':'12.5735950447',
+                    'LatLng':'55.6845043579,12.5735950447',
+                    #'LatLng':'55.6845043579,12.5735950447',
                     'zoom': self.zoom,
                     'template_name': self.template_name
                     })
