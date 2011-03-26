@@ -1,6 +1,6 @@
-# from classytags.core import Options
-# from classytags.arguments import Argument
-# from classytags.helpers import InclusionTag
+from classytags.core import Options
+from classytags.arguments import Argument
+from classytags.helpers import InclusionTag
 from django import template
 from django.template.loader import render_to_string
 
@@ -13,12 +13,36 @@ register = template.Library()
 # register.tag(Javascript)
 
 
+class Map(InclusionTag):
+    name = 'maps'
+    template = 'geotagging/map.html'
+    options = Options(
+        Argument('id'),
+        Argument('latlng', default='55.6845043579,12.5735950447'),
+        Argument('width', default='300')
+        Argument('height', default='400')
+        Argument('zoom', default='16')
+    )
+
+    def get_context(self, context, id, latlng, width, height, zoom):
+        return {'title':'a map',
+                'map_id': id,
+                'width': width,
+                'height': height,
+                'LatLng': latlng,
+                #'LatLng':'55.6845043579,12.5735950447',
+                'zoom': zoom,
+                }
+        
+register.tag(Map)
+
+
 """
 Based on easy_maps: https://bitbucket.org/kmike/django-easy-maps/overview
 """
 
 @register.tag
-def geotagging_map(parser, token):
+def geotagging_map2(parser, token):
     """
     The syntax:
         {% geotagging_map <address> [<width> <height>] [<zoom>] [using <template_name>] %}
