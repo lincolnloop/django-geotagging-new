@@ -16,13 +16,13 @@ register = template.Library()
 class Map(InclusionTag):
     name = 'maps'
     template = 'geotagging/map.html'
-    options = Options(
-        Argument('id'),
-        Argument('latlng', default='55.6845043579,12.5735950447'),
-        Argument('width', default='300'),
-        Argument('height', default='400'),
-        Argument('zoom', default='16')
-        )
+    # options = Options(
+    #     Argument('id'),
+    #     Argument('latlng', default='55.6845043579,12.5735950447'),
+    #     Argument('width', default='300'),
+    #     Argument('height', default='400'),
+    #     Argument('zoom', default='16')
+    # )
 
     def get_context(self, *args):
         import ipdb; ipdb.set_trace()
