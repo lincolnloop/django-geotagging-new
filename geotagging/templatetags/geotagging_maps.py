@@ -11,6 +11,25 @@ class Javascript(InclusionTag):
 
 register.tag(Javascript)
 
+
+class Map(InclusionTag):
+    name = 'map'
+    template = 'geotagging/map.html'
+
+    def get_context(self, context):
+        context.update({
+                'title':'a map',
+                'map_id': '1',
+                'width': '100',
+                'height': '100',
+                'lat':'-34.397',
+                'long':'150.644',
+                'zoom': self.zoom,
+                'template_name': template_name
+                })
+        return context
+register.tag(Map)
+
 """
 Notes:
 
