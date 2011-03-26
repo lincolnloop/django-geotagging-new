@@ -4,7 +4,6 @@
          class="geotagging-map-googlemap">
     </div>
 {% endblock %}
-
 {% block map_js %}
     <!-- Map creation script -->
     <script type="text/javascript">
@@ -30,12 +29,9 @@
             });
             {% endblock %}
         }
-
         {% block map_loading_js %}
         // initialize the map after page loading
         google.maps.event.addDomListener(window, 'load', initialize_map_{{ map_id }});
         {% endblock %}
     </script>
 {% endblock %}
-
-test
