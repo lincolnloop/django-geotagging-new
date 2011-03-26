@@ -49,7 +49,7 @@ class MapObjects(InclusionTag):
                 centroid = objects.collect().envelope.centroid
             else:
                 centroid = objects[0].geotagging_point
-            latlng = (centroid.y, centroid.x)
+            latlng = '%s,%s' % (centroid.y, centroid.x)
             markers = [{'latlng': i.get_point_coordinates(as_string=True, inverted=True),
                         'object': i} for i in objects]
         else:
