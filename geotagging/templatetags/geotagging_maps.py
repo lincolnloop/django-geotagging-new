@@ -1,8 +1,10 @@
+from django import template
+from django.template.loader import render_to_string
+from django.db.models.query import QuerySet
+
 from classytags.core import Options
 from classytags.arguments import Argument
 from classytags.helpers import InclusionTag
-from django import template
-from django.template.loader import render_to_string
 
 from geotagging.models import PointGeoTag
 
@@ -18,34 +20,47 @@ register.tag(Javascript)
 """
 Loosly based on dajngo-easy-maps: https://bitbucket.org/kmike/django-easy-maps/overview
 """
-class Map(InclusionTag):
+class MapObjects(InclusionTag):
     name = 'geotagging_map'
     template = 'geotagging/map.html'
     options = Options(
-        Argument('latlng'),
-        Argument('title', default='Map', required=False),
+        Argument('objects'),
         Argument('width', default='300', required=False),
         Argument('height', default='400', required=False),
         Argument('zoom', default='16', required=False)
     )
 
-    def get_context(self, context, latlng, title, width, height, zoom):
+    def get_context(self, context, objects, width, height, zoom):
         context['geotagging_map_counter'] = context.get('geotagging_map_counter', 0) + 1
         id = context['geotagging_map_counter']
-        if isinstance(latlng, PointGeoTag):
-            latlng_str = latlng.get_point_coordinates(as_string=True, inverted=True)
+        if isinstance(objects, PointGeoTag):
+            latlng = objects.get_point_coordinates(as_string=True, inverted=True)
+            markers = [{'latlng':latlng, 'object': objects}]
+        elif isinstance(objects, basestring):
+            latlng = objects
+            markers = [{'latlng':latlng}]
+        elif isinstance(objects, QuerySet) or isinstance(objects, list):
+            latlng = objects[0].get_point_coordinates(as_string=True, inverted=True)
+            markers = [{'latlng': i.get_point_coordinates(as_string=True, inverted=True)
+                        'object': i} for i in objects]
         else:
-            latlng_str = latlng
+            raise template.TemplateSyntaxError(
+                'The first parameter must be either a PointGeoTag subclass, '
+                'a queryset of PointGeoTag subclasses, '
+                'a list of PointGeoTag subclases or a LatLong string. '
+                'A %s was given' % type(objects))
+
         return {'title': title,
                 'map_id': id,
                 'width': width,
                 'height': height,
-                'LatLng': latlng_str,
-                #'LatLng':'55.6845043579,12.5735950447',
+                'latlng': latlng,
+                'markers': markers,
                 'zoom': zoom,
                 }
 
-register.tag(Map)
+register.tag(MapObjects)
+
 
 """
 Notes:

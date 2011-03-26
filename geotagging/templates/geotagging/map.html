@@ -9,7 +9,7 @@
     <!-- Map creation script -->
     <script type="text/javascript">
         function initialize_map_{{ map_id }}() {
-            var latlng = new google.maps.LatLng({{ LatLng }});
+            var latlng = new google.maps.LatLng({{ latlng }});
             var mapElem = document.getElementById("map-canvas-{{ map_id }}");
 
             {% block map_options_js %}
@@ -22,12 +22,14 @@
 
             var map = new google.maps.Map(mapElem, mapOptions);
 
-            {% block extra_js %}
+            {% block extra_map_js %}
+            {% for marker in markers %}
             var marker = new google.maps.Marker({
-                position: latlng,
+                position: new google.maps.LatLng({{ marker.latlng }}),
                 map: map,
-                title: "{{ title }}"
+                title: "{% if marker.object %}{{ marker.object.get_title }}{% endif %}"
             });
+            {% endfor %}
             {% endblock %}
         }
 

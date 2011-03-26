@@ -160,3 +160,15 @@ respectively.
  * Add security for the model case on optimize view (register the
    models that can be queried) (maybe similar to django-filters)
  * Add tests
+ * Markers are being added the lazy way. fix that. 
+
+Maps
+====
+
+Need documentation for the maps feature. Some stuff to remember when documenting:
+
+ * an object can implement `get_title(self) -> string` to assign the title to a marker
+ * The first parameter must be either a PointGeoTag subclass, a
+   queryset of PointGeoTag subclasses, a list of PointGeoTag subclases
+   or a LatLong string.
+
