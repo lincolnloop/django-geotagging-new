@@ -6,26 +6,26 @@ from django.template.loader import render_to_string
 
 register = template.Library()
 
-# class Javascript(InclusionTag):
-#     name = 'include_maps_js'
-#     template = 'geotagging/map_scripts.html'
+class Javascript(InclusionTag):
+    name = 'include_maps_js'
+    template = 'geotagging/map_scripts.html'
 
-# register.tag(Javascript)
+register.tag(Javascript)
 
 
 class Map(InclusionTag):
-    name = 'maps'
+    name = 'geotagging_map'
     template = 'geotagging/map.html'
     options = Options(
-        Argument('id'),
         Argument('latlng', default='55.6845043579,12.5735950447', required=False),
         Argument('width', default='300', required=False),
         Argument('height', default='400', required=False),
         Argument('zoom', default='16', required=False)
     )
 
-    def get_context(self, context, id, latlng, width, height, zoom):
-        import ipdb; ipdb.set_trace()
+    def get_context(self, context, latlng, width, height, zoom):
+        context['geotagging_map_counter'] = context.get('geotagging_map_counter', 0) + 1
+        id = context['geotagging_map_counter']
         return {'title':'a map',
                 'map_id': id,
                 'width': width,
