@@ -25,7 +25,7 @@ class Map(InclusionTag):
     #     Argument('zoom', default='16')
     # )
 
-    def get_context(self, *args):
+    def get_context(self, *args, **kwargs):
         import ipdb; ipdb.set_trace()
         return {'title':'a map',
                 'map_id': id,
