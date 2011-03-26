@@ -64,6 +64,16 @@ Example::
     >>> Attraction.geo_objects.filter(geotagging_point__intersects=an_area)
     [<Attraction>, ...]
 
+To add alias to the `geotagging_point` field, simply write a property
+to access it. This will not allow the new name to be used in
+querysets, but it will be available to the object::
+
+    class Attraction(PointGeoTag):
+        ...
+        def _get_point(self):
+            return self.geotagging_point
+        location = property(_get_point)
+
 Admin
 =====
 
