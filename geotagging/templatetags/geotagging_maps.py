@@ -27,7 +27,7 @@ class Map(InclusionTag):
         Argument('zoom', default='16', required=False)
     )
 
-    def get_context(self, context, latlng, width, height, zoom):
+    def get_context(self, context, latlng, title, width, height, zoom):
         context['geotagging_map_counter'] = context.get('geotagging_map_counter', 0) + 1
         id = context['geotagging_map_counter']
         return {'title': title,
