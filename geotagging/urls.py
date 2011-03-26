@@ -5,5 +5,5 @@ import views
 
 urlpatterns = patterns('',
     ('^optimize/$', views.optimize),
-    ('^map/$', TemplateView.as_view(template_name='geotagging/test.html')),
+    ('^map/$', TemplateView.as_view(template_name='geotagging/map.html')),
 )
