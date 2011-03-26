@@ -32,7 +32,7 @@ class MapObjects(InclusionTag):
         Argument('zoom', default='16', required=False)
     )
 
-    def get_context(self, context, objects, width, height, zoom, center):
+    def get_context(self, context, objects, width, height, zoom):
         context['request'].session['geotagging_map_counter'] = (
             context['request'].session.get('geotagging_map_counter', 0) + 1)
         id = context['request'].session['geotagging_map_counter']
