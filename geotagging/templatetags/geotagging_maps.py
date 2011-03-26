@@ -50,8 +50,7 @@ class MapObjects(InclusionTag):
                 'a list of PointGeoTag subclases or a LatLong string. '
                 'A %s was given' % type(objects))
 
-        return {'title': title,
-                'map_id': id,
+        return {'map_id': id,
                 'width': width,
                 'height': height,
                 'latlng': latlng,
