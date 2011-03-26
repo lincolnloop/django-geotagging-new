@@ -24,7 +24,7 @@ class Map(InclusionTag):
                 'height': '100',
                 'lat':'-34.397',
                 'long':'150.644',
-                'zoom': self.zoom,
+                'zoom': '0',
                 'template_name': template_name
                 })
         return context
