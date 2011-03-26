@@ -180,3 +180,23 @@ Need documentation for the maps feature. Some stuff to remember when documenting
  * Add the reset context processor to avoid map ids from increasing
  * Document what's available to the template
  * Missing stuff (make markers clickable, avoid markers from overlapping)
+
+
+Template
+--------
+
+Here's a basic template to include some maps::
+
+    {% extends "base.html" %}
+    {% load geotagging_maps %}
+    
+    {% block extra_head %}
+    {% geotagging_maps_api %}
+    {% endblock %}
+    
+    {% block content %}
+    <p>{% geotagging_map "55.6845043579,12.5735950447" %}</p>
+    <p>{% geotagging_map "59.32809,18.07740" 300 300 5 %}</p>
+    <p>{% geotagging_map attraction_list 300 300 %}</p>
+    {% endblock %}
+
