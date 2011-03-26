@@ -3,6 +3,7 @@ from django.template.loader import render_to_string
 from django.db.models.query import QuerySet
 from django.conf import settings
 from django.contrib.gis.geos import Point
+from django.contrib.gis.maps.google.zoom import GoogleZoom
 
 from classytags.core import Options
 from classytags.arguments import Argument
@@ -47,6 +48,8 @@ class MapObjects(InclusionTag):
                 centroid = Point(13.0043792701320360, 55.5996869012237553)
             if not getattr(settings, 'USE_GEOGRAPHY', True):
                 centroid = objects.collect().envelope.centroid
+                gz = GoogleZoom()
+                zoom = gz.get_zoom(objects.unionagg())
             else:
                 centroid = objects[0].geotagging_point
             latlng = '%s,%s' % (centroid.y, centroid.x)
