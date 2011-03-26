@@ -55,27 +55,17 @@ class GeotaggingMapNode(template.Node):
 
     def render(self, context):
         try:
-            address = self.address.resolve(context)
             template_name = self.template_name.resolve(context)
-
             context.update({
                     'title':'a map',
                     'map_id': '1',
-                    'width': '300',
-                    'height': '400',
-                    'lat':'56.841071',
-                    'long':'60.650832',
+                    'width': self.width,
+                    'height': self.height,
+                    'lat':'55.6845043579',
+                    'long':'12.5735950447',
                     'zoom': self.zoom,
                     'template_name': self.template_name
                     })
-            # map, _ = Address.objects.get_or_create(address=address or '')
-            # context.update({
-            #     'map': map,
-            #     'width': self.width,
-            #     'height': self.height,
-            #     'zoom': self.zoom,
-            #     'template_name': template_name
-            # })
             return render_to_string(template_name, context_instance=context)
         except template.VariableDoesNotExist:
             return ''
