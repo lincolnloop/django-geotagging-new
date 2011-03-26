@@ -31,9 +31,10 @@ class MapObjects(InclusionTag):
     )
 
     def get_context(self, context, objects, width, height, zoom):
-        import ipdb; ipdb.set_trace()
-        self.geotagging_map_counter = getattr(self, 'geotagging_map_counter', 0) + 1
-        id = context['geotagging_map_counter']
+        context['request'].session['geotagging_map_counter'] = (
+            context['request'].session.get('geotagging_map_counter', 0) + 1)
+        id = context['request'].session['geotagging_map_counter']
+        print id
         if isinstance(objects, PointGeoTag):
             latlng = objects.get_point_coordinates(as_string=True, inverted=True)
             markers = [{'latlng':latlng, 'object': objects}]
