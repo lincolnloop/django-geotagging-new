@@ -41,7 +41,7 @@ class MapObjects(InclusionTag):
             markers = [{'latlng':latlng}]
         elif isinstance(objects, QuerySet) or isinstance(objects, list):
             latlng = objects[0].get_point_coordinates(as_string=True, inverted=True)
-            markers = [{'latlng': i.get_point_coordinates(as_string=True, inverted=True)
+            markers = [{'latlng': i.get_point_coordinates(as_string=True, inverted=True),
                         'object': i} for i in objects]
         else:
             raise template.TemplateSyntaxError(
