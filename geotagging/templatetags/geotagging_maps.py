@@ -19,13 +19,12 @@ class Map(InclusionTag):
     options = Options(
         Argument('id'),
         Argument('latlng', default='55.6845043579,12.5735950447', required=False),
+        Argument('width', default='300', required=False),
+        Argument('height', default='400', required=False),
+        Argument('zoom', default='16', required=False)
     )
-    #     Argument('width', default='300'),
-    #     Argument('height', default='400'),
-    #     Argument('zoom', default='16')
-    # )
 
-    def get_context(self, context, id, latlng, **kwargs):
+    def get_context(self, context, id, latlng, width, height, zoom):
         import ipdb; ipdb.set_trace()
         return {'title':'a map',
                 'map_id': id,
