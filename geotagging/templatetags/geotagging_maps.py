@@ -25,7 +25,7 @@ class Map(InclusionTag):
                 'lat':'-34.397',
                 'long':'150.644',
                 'zoom': '0',
-                'template_name': template_name
+                'template_name': 'geotagging/map.html'
                 })
         return context
 register.tag(Map)
