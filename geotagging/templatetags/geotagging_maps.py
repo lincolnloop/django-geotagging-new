@@ -1,34 +1,84 @@
-from classytags.core import Options
-from classytags.arguments import Argument
-from classytags.helpers import InclusionTag
+# from classytags.core import Options
+# from classytags.arguments import Argument
+# from classytags.helpers import InclusionTag
 from django import template
+from django.template.loader import render_to_string
 
 register = template.Library()
 
-class Javascript(InclusionTag):
-    name = 'include_maps_js'
-    template = 'geotagging/map_scripts.html'
+# class Javascript(InclusionTag):
+#     name = 'include_maps_js'
+#     template = 'geotagging/map_scripts.html'
 
-register.tag(Javascript)
+# register.tag(Javascript)
 
 
-class Map(InclusionTag):
-    name = 'map'
-    template = 'geotagging/map.html'
+"""
+Based on easy_maps: https://bitbucket.org/kmike/django-easy-maps/overview
+"""
 
-    def get_context(self, context):
-        context.update({
-                'title':'a map',
-                'map_id': '1',
-                'width': '100',
-                'height': '100',
-                'lat':'-34.397',
-                'long':'150.644',
-                'zoom': '0',
-                'template_name': 'geotagging/map.html'
-                })
-        return context
-register.tag(Map)
+@register.tag
+def geotagging_map(parser, token):
+    """
+    The syntax:
+        {% geotagging_map <address> [<width> <height>] [<zoom>] [using <template_name>] %}
+    """
+    width, height, zoom, template_name = None, None, None, None
+    params = token.split_contents()
+
+    # pop the template name
+    if params[-2] == 'using':
+        template_name = params[-1]
+        params = params[:-2]
+
+    if len(params) < 2:
+        raise template.TemplateSyntaxError('geotagging_map tag requires address argument')
+
+    address = params[1]
+
+    if len(params) == 4:
+        width, height = params[2], params[3]
+    elif len(params) == 5:
+        width, height, zoom = params[2], params[3], params[4]
+    elif len(params) == 3 or len(params) > 5:
+        raise template.TemplateSyntaxError('geotagging_map tag has the following syntax: '
+                   '{% geotagging_map <address> <width> <height> [zoom] [using <template_name>] %}')
+    return GeotaggingMapNode(address, width, height, zoom, template_name)
+
+class GeotaggingMapNode(template.Node):
+    def __init__(self, address, width, height, zoom, template_name):
+        self.address = template.Variable(address)
+        self.width = width or ''
+        self.height = height or ''
+        self.zoom = zoom or 16
+        self.template_name = template.Variable(template_name or '"geotagging/map.html"')
+
+    def render(self, context):
+        try:
+            address = self.address.resolve(context)
+            template_name = self.template_name.resolve(context)
+
+            context.update({
+                    'title':'a map',
+                    'map_id': '1',
+                    'width': '100',
+                    'height': '100',
+                    'lat':'-34.397',
+                    'long':'150.644',
+                    'zoom': self.zoom,
+                    'template_name': self.tempalte_name
+                    })
+            # map, _ = Address.objects.get_or_create(address=address or '')
+            # context.update({
+            #     'map': map,
+            #     'width': self.width,
+            #     'height': self.height,
+            #     'zoom': self.zoom,
+            #     'template_name': template_name
+            # })
+            return render_to_string(template_name, context_instance=context)
+        except template.VariableDoesNotExist:
+            return ''
 
 """
 Notes:
