@@ -20,7 +20,7 @@
 
             {% block map_options_js %}
             var mapOptions = {
-                //zoom: {{ zoom }},
+                zoom: {{ zoom }},
                 center: latlng,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };

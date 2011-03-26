@@ -61,10 +61,10 @@ class GeotaggingMapNode(template.Node):
             context.update({
                     'title':'a map',
                     'map_id': '1',
-                    'width': '100',
-                    'height': '100',
-                    'lat':'-34.397',
-                    'long':'150.644',
+                    'width': '300',
+                    'height': '400',
+                    'lat':'56.841071',
+                    'long':'60.650832',
                     'zoom': self.zoom,
                     'template_name': self.template_name
                     })
