@@ -4,6 +4,8 @@ from classytags.helpers import InclusionTag
 from django import template
 from django.template.loader import render_to_string
 
+from geotagging.models import PointGeoTag
+
 register = template.Library()
 
 class Javascript(InclusionTag):
@@ -30,14 +32,19 @@ class Map(InclusionTag):
     def get_context(self, context, latlng, title, width, height, zoom):
         context['geotagging_map_counter'] = context.get('geotagging_map_counter', 0) + 1
         id = context['geotagging_map_counter']
+        if isinstance(latlng, PointGeoTag):
+            latlng_str = latlng.get_point_coordinates(as_string=True, inverted=True)
+        else:
+            latlng_str = latlng
         return {'title': title,
                 'map_id': id,
                 'width': width,
                 'height': height,
-                'LatLng': latlng,
+                'LatLng': latlng_str,
                 #'LatLng':'55.6845043579,12.5735950447',
                 'zoom': zoom,
                 }
+
 register.tag(Map)
 
 """

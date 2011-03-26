@@ -2,7 +2,7 @@ import json
 import httplib, urllib
 import itertools
 
-from django.db import models
+from geotagging.models import PointGeoTag
 
 class GoogleApiException(Exception):
     error_map = {'NOT_FOUND': "indicates at least one of the locations specified in the requests's origin, destination, or waypoints could not be geocoded.",
@@ -31,7 +31,7 @@ def google_TSP_call(waypoints):
     destination = w_destination = waypoints.pop()
     coordinates = waypoints
 
-    if isinstance(waypoints[0].__class__, models.base.ModelBase):
+    if isinstance(waypoints[0]_, PointGeoTag):
         coordinates = [i.get_point_coordinates(as_string=True, inverted=True) 
                        for i in waypoints]
 
