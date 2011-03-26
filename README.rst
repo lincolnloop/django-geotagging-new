@@ -161,6 +161,11 @@ respectively.
    models that can be queried) (maybe similar to django-filters)
  * Add tests
  * Markers are being added the lazy way. fix that. 
+ * document settings.USE_GEOGRAPHY.
+   - refer to
+     http://docs.djangoproject.com/en/dev/ref/contrib/gis/model-api/#geography
+     and http://postgis.refractions.net/documentation/manual-1.5/ch04.html#PostGIS_GeographyVSGeometry
+     and http://workshops.opengeo.org/postgis-intro/geography.html
 
 Maps
 ====

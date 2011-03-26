@@ -6,6 +6,7 @@ packaged as a reusable app.
 from django.contrib.gis.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.db import connection
+from django.conf import settings
 
 HAS_GEOGRAPHY = False
 try:
@@ -25,7 +26,7 @@ def field_kwargs(verbose_name):
         'null': True,
         'verbose_name': _(verbose_name),
     }
-    if HAS_GEOGRAPHY:
+    if HAS_GEOGRAPHY and getattr(settings, 'USE_GEOGRAPHY', True):
         kwargs['geography'] = True
     return kwargs
 
