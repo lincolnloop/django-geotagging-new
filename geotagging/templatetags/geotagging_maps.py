@@ -14,10 +14,6 @@ class Javascript(InclusionTag):
     name = 'geotagging_maps_api'
     template = 'geotagging/map_scripts.html'
 
-    def render_tag(self, context, **kwargs):
-        context['geotagging_map_counter'] = 0
-        return super(Javascript, self).render_tag(context, **kwargs)
-
 register.tag(Javascript)
 
 
@@ -35,7 +31,8 @@ class MapObjects(InclusionTag):
     )
 
     def get_context(self, context, objects, width, height, zoom):
-        context['geotagging_map_counter'] += 1
+        import ipdb; ipdb.set_trace()
+        self.geotagging_map_counter = getattr(self, 'geotagging_map_counter', 0) + 1
         id = context['geotagging_map_counter']
         if isinstance(objects, PointGeoTag):
             latlng = objects.get_point_coordinates(as_string=True, inverted=True)
