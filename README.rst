@@ -171,4 +171,6 @@ Need documentation for the maps feature. Some stuff to remember when documenting
  * The first parameter must be either a PointGeoTag subclass, a
    queryset of PointGeoTag subclasses, a list of PointGeoTag subclases
    or a LatLong string.
-
+ * Add the reset context processor to avoid map ids from increasing
+ * Document what's available to the template
+ * Missing stuff (make markers clickable, avoid markers from overlapping)
