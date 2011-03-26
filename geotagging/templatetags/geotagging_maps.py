@@ -22,9 +22,10 @@ class Map(InclusionTag):
         Argument('width', default='300'),
         Argument('height', default='400'),
         Argument('zoom', default='16')
-    )
+        )
 
-    def get_context(self, context, id, latlng, width, height, zoom):
+    def get_context(self, *args):
+        import ipdb; ipdb.set_trace()
         return {'title':'a map',
                 'map_id': id,
                 'width': width,
