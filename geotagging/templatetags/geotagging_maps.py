@@ -66,7 +66,7 @@ class GeotaggingMapNode(template.Node):
                     'lat':'-34.397',
                     'long':'150.644',
                     'zoom': self.zoom,
-                    'template_name': self.tempalte_name
+                    'template_name': self.template_name
                     })
             # map, _ = Address.objects.get_or_create(address=address or '')
             # context.update({
