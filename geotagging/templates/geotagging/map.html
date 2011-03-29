@@ -32,7 +32,7 @@
               markers.push(marker);
             {% endfor %}
             if (window.MarkerClusterer === undefined){
-               for (i in markersArray) {
+               for (i in markers) {
                   markers[i].setMap(map);
                }
             } else {
