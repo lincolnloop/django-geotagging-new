@@ -31,8 +31,13 @@
                     'title': "{% if marker.object %}{{ marker.object.get_title }}{% endif %}"});
               markers.push(marker);
             {% endfor %}
-            var markerCluster = new MarkerClusterer(map, markers);
-
+            if (window.MarkerClusterer === undefined){
+               for (i in markersArray) {
+                  markers[i].setMap(map);
+               }
+            } else {
+                var markerCluster = new MarkerClusterer(map, markers);
+            }
             {% endblock %}
         }
 

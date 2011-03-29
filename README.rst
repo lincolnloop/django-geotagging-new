@@ -167,6 +167,7 @@ respectively.
      and http://postgis.refractions.net/documentation/manual-1.5/ch04.html#PostGIS_GeographyVSGeometry
      and http://workshops.opengeo.org/postgis-intro/geography.html
  * document: `objects = PointGeoTag.geo_objects`
+ * Figure out how to ship with marker clusterer javascript
 
 Maps
 ====
