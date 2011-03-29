@@ -30,6 +30,10 @@
                 title: "{% if marker.object %}{{ marker.object.get_title }}{% endif %}"
             });
             {% endfor %}
+
+            var map = new GMap2(mapElem);
+            map.setCenter(new GLatLng({{ latlng }}), {{ zoom }});
+            var mc = new MarkerClusterer(map);
             {% endblock %}
         }
 
