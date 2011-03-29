@@ -33,15 +33,6 @@
             {% endfor %}
             var markerCluster = new MarkerClusterer(map, markers);
 
-            {% comment %}
-            var marker = new google.maps.Marker({
-                position: new google.maps.LatLng({{ marker.latlng }}),
-                map: map,
-                title: "{% if marker.object %}{{ marker.object.get_title }}{% endif %}"
-            });
-            {% endcomment %}
-
-            var mc = new MarkerClusterer(map);
             {% endblock %}
         }
 
