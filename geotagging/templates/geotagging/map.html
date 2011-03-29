@@ -23,13 +23,23 @@
             var map = new google.maps.Map(mapElem, mapOptions);
 
             {% block extra_map_js %}
+            var markers = [];
             {% for marker in markers %}
+              var latLng = new google.maps.LatLng({{ marker.latlng }});
+              var marker = new google.maps.Marker({
+                    'position': latLng
+                    'title': "{% if marker.object %}{{ marker.object.get_title }}{% endif %}"});
+              markers.push(marker);
+            {% endfor %}
+            var markerCluster = new MarkerClusterer(map, markers);
+
+            {% comment %}
             var marker = new google.maps.Marker({
                 position: new google.maps.LatLng({{ marker.latlng }}),
                 map: map,
                 title: "{% if marker.object %}{{ marker.object.get_title }}{% endif %}"
             });
-            {% endfor %}
+            {% endcomment %}
 
             var mc = new MarkerClusterer(map);
             {% endblock %}
