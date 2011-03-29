@@ -46,7 +46,7 @@ class MapObjects(InclusionTag):
         elif isinstance(objects, QuerySet) or isinstance(objects, list):
             if len(objects) == 0:
                 centroid = Point(13.0043792701320360, 55.5996869012237553)
-            if not getattr(settings, 'USE_GEOGRAPHY', True):
+            elif not getattr(settings, 'USE_GEOGRAPHY', True):
                 centroid = objects.collect().envelope.centroid
                 gz = GoogleZoom()
                 zoom = gz.get_zoom(objects.unionagg())
