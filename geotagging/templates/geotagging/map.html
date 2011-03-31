@@ -31,7 +31,7 @@
                     'title': "{% if marker.object %}{{ marker.object.get_title }}{% endif %}"});
               markers.push(marker);
             {% endcomment %}
-            for (i in {{ markers }}) {
+            for (i in {{ markers|safe }}) {
                 var latLng = new google.maps.LatLng(i.latlng);
                 var marker = new google.maps.Marker({
                     'position': latLng,
