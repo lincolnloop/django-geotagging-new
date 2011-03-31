@@ -1,5 +1,3 @@
-import json
-
 from django import template
 from django.template.loader import render_to_string
 from django.db.models.query import QuerySet
@@ -41,15 +39,10 @@ class MapObjects(InclusionTag):
         id = context['request'].session['geotagging_map_counter']
         if isinstance(objects, PointGeoTag):
             latlng = objects.get_point_coordinates(as_string=True, inverted=True)
-            lat, lng = [float(i) for i in latlng.split(',')]
-            markers = [{'lat':lat,
-                        'lng':lng,
-                        'latlng':latlng,
-                        'title': getattr(objects, 'get_title', lambda: '')()}]
+            markers = [{'latlng':latlng, 'object': objects}]
         elif isinstance(objects, basestring):
             latlng = objects
-            lat, lng = [float(i) for i in latlng.split(',')]
-            markers = [{'latlng':latlng, 'lat':lat, 'lng':lng}]
+            markers = [{'latlng':latlng}]
         elif isinstance(objects, QuerySet) or isinstance(objects, list):
             if len(objects) == 0:
                 centroid = Point(13.0043792701320360, 55.5996869012237553)
@@ -60,11 +53,8 @@ class MapObjects(InclusionTag):
             else:
                 centroid = objects[0].geotagging_point
             latlng = '%s,%s' % (centroid.y, centroid.x)
-            lat, lng = [float(i) for i in latlng.split(',')]
             markers = [{'latlng': i.get_point_coordinates(as_string=True, inverted=True),
-                        'title': getattr(objects, 'get_title', lambda: '')(),
-                        'lat':lat, 'lng':lng}
-                       for i in objects]
+                        'object': i} for i in objects]
         else:
             raise template.TemplateSyntaxError(
                 'The first parameter must be either a PointGeoTag subclass, '
@@ -76,7 +66,7 @@ class MapObjects(InclusionTag):
                 'width': width,
                 'height': height,
                 'latlng': latlng,
-                'markers': json.dumps(markers),
+                'markers': markers,
                 'zoom': zoom,
                 }
 
