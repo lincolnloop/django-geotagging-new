@@ -41,11 +41,15 @@ class MapObjects(InclusionTag):
         id = context['request'].session['geotagging_map_counter']
         if isinstance(objects, PointGeoTag):
             latlng = objects.get_point_coordinates(as_string=True, inverted=True)
-            markers = [{'latlng':latlng, 
+            lat, lng = [float(i) for i in latlng.split(',')]
+            markers = [{'lat':lat,
+                        'lng':lng,
+                        'latlng':latlng,
                         'title': getattr(objects, 'get_title', lambda: '')()}]
         elif isinstance(objects, basestring):
             latlng = objects
-            markers = [{'latlng':latlng}]
+            lat, lng = [float(i) for i in latlng.split(',')]
+            markers = [{'latlng':latlng, 'lat':lat, 'lng':lng}]
         elif isinstance(objects, QuerySet) or isinstance(objects, list):
             if len(objects) == 0:
                 centroid = Point(13.0043792701320360, 55.5996869012237553)
@@ -56,8 +60,10 @@ class MapObjects(InclusionTag):
             else:
                 centroid = objects[0].geotagging_point
             latlng = '%s,%s' % (centroid.y, centroid.x)
+            lat, lng = [float(i) for i in latlng.split(',')]
             markers = [{'latlng': i.get_point_coordinates(as_string=True, inverted=True),
-                        'title': getattr(objects, 'get_title', lambda: '')()} 
+                        'title': getattr(objects, 'get_title', lambda: '')(),
+                        'lat':lat, 'lng':lng}
                        for i in objects]
         else:
             raise template.TemplateSyntaxError(

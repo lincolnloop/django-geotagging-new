@@ -32,7 +32,7 @@
               markers.push(marker);
             {% endcomment %}
             for (marker in {{ markers|safe }}) {
-                var latLng = new google.maps.LatLng(marker.latlng);
+                var latLng = new google.maps.LatLng(marker.lat, marker.lng);
                 var marker = new google.maps.Marker({
                     'position': latLng,
                     'title': marker.title || "Marker"});
