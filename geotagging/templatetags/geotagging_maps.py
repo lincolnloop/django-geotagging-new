@@ -1,3 +1,5 @@
+import json
+
 from django import template
 from django.template.loader import render_to_string
 from django.db.models.query import QuerySet
@@ -39,7 +41,8 @@ class MapObjects(InclusionTag):
         id = context['request'].session['geotagging_map_counter']
         if isinstance(objects, PointGeoTag):
             latlng = objects.get_point_coordinates(as_string=True, inverted=True)
-            markers = [{'latlng':latlng, 'object': objects}]
+            markers = [{'latlng':latlng, 
+                        'title': getattr(objects, 'get_title', lambda: '')()}]
         elif isinstance(objects, basestring):
             latlng = objects
             markers = [{'latlng':latlng}]
@@ -54,7 +57,8 @@ class MapObjects(InclusionTag):
                 centroid = objects[0].geotagging_point
             latlng = '%s,%s' % (centroid.y, centroid.x)
             markers = [{'latlng': i.get_point_coordinates(as_string=True, inverted=True),
-                        'object': i} for i in objects]
+                        'title': getattr(objects, 'get_title', lambda: '')()} 
+                       for i in objects]
         else:
             raise template.TemplateSyntaxError(
                 'The first parameter must be either a PointGeoTag subclass, '
@@ -66,7 +70,7 @@ class MapObjects(InclusionTag):
                 'width': width,
                 'height': height,
                 'latlng': latlng,
-                'markers': markers,
+                'markers': json.dumps(markers),
                 'zoom': zoom,
                 }
 

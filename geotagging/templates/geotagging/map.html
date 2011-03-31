@@ -24,13 +24,20 @@
 
             {% block extra_map_js %}
             var markers = [];
-            {% for marker in markers %}
+            {% comment %}
               var latLng = new google.maps.LatLng({{ marker.latlng }});
               var marker = new google.maps.Marker({
                     'position': latLng,
                     'title': "{% if marker.object %}{{ marker.object.get_title }}{% endif %}"});
               markers.push(marker);
-            {% endfor %}
+            {% endcomment %}
+            for (i in {{ markers }}) {
+                var latLng = new google.maps.LatLng(i.latlng);
+                var marker = new google.maps.Marker({
+                    'position': latLng,
+                    'title': marker.title || "Marker");
+                markers.push(marker);
+            }
             if (window.MarkerClusterer === undefined){
                for (i in markers) {
                   markers[i].setMap(map);
