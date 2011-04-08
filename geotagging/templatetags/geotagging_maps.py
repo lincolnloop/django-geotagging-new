@@ -22,13 +22,14 @@ class Javascript(ttag.Tag):
         t = template.loader.get_template('geotagging/map_scripts.html')
         return t.render(template.Context({}))
 
+register.tag(Javascript)
+
 
 """
 Loosly based on dajngo-easy-maps: https://bitbucket.org/kmike/django-easy-maps/overview
 """
 class MapObjects(ttag.Tag):
     class Meta:
-        block = False
         name = 'geotagging_map'
     
     objects = ttag.Arg(positional=True)
@@ -83,6 +84,7 @@ class MapObjects(ttag.Tag):
                                           'zoom': zoom,
                                           }))
 
+register.tag(MapObjects)
 
 
 # class MapObjects(InclusionTag):
