@@ -87,56 +87,6 @@ class MapObjects(ttag.Tag):
 register.tag(MapObjects)
 
 
-# class MapObjects(InclusionTag):
-#     name = 'geotagging_map'
-#     template = 'geotagging/map.html'
-#     options = Options(
-#         Argument('objects'),
-#         Argument('width', default='300', required=False),
-#         Argument('height', default='400', required=False),
-#         Argument('zoom', default='16', required=False)
-#     )
-
-#     def get_context(self, context, objects, width, height, zoom):
-#         context['request'].session['geotagging_map_counter'] = (
-#             context['request'].session.get('geotagging_map_counter', 0) + 1)
-#         id = context['request'].session['geotagging_map_counter']
-#         if isinstance(objects, PointGeoTag):
-#             latlng = objects.get_point_coordinates(as_string=True, inverted=True)
-#             markers = [{'latlng':latlng, 'object': objects}]
-#         elif isinstance(objects, basestring):
-#             latlng = objects
-#             markers = [{'latlng':latlng}]
-#         elif isinstance(objects, QuerySet) or isinstance(objects, list):
-#             if len(objects) == 0:
-#                 centroid = Point(13.0043792701320360, 55.5996869012237553)
-#             elif not getattr(settings, 'USE_GEOGRAPHY', True):
-#                 centroid = objects.collect().envelope.centroid
-#                 gz = GoogleZoom()
-#                 zoom = gz.get_zoom(objects.unionagg())
-#             else:
-#                 centroid = objects[0].geotagging_point
-#             latlng = '%s,%s' % (centroid.y, centroid.x)
-#             markers = [{'latlng': i.get_point_coordinates(as_string=True, inverted=True),
-#                         'object': i} for i in objects]
-#         else:
-#             raise template.TemplateSyntaxError(
-#                 'The first parameter must be either a PointGeoTag subclass, '
-#                 'a queryset of PointGeoTag subclasses, '
-#                 'a list of PointGeoTag subclases or a LatLong string. '
-#                 'A %s was given' % type(objects))
-
-#         return {'map_id': id,
-#                 'width': width,
-#                 'height': height,
-#                 'latlng': latlng,
-#                 'markers': markers,
-#                 'zoom': zoom,
-#                 }
-
-# register.tag(MapObjects)
-
-
 """
 Notes:
 
