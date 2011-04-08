@@ -41,10 +41,10 @@ class MapObjects(ttag.Tag):
     def render(self, context):
         data = self.resolve(context)
         objects = data.get('objects', None)
-        width = data.get('objects', None)
-        height = data.get('objects', None)
-        zoom = data.get('objects', None)
-        static = data.get('objects', None)
+        width = data.get('width', None)
+        height = data.get('height', None)
+        zoom = data.get('zoom', None)
+        static = data.get('static', None)
 
         context['request'].session['geotagging_map_counter'] = (
             context['request'].session.get('geotagging_map_counter', 0) + 1)
