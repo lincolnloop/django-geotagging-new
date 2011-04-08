@@ -75,7 +75,7 @@ class MapObjects(ttag.Tag):
                 'a list of PointGeoTag subclases or a LatLong string. '
                 'A %s was given' % type(objects))
 
-        if static:
+        if static=="true":
             t = template.loader.get_template('geotagging/staticmap.html')
             return t.render(template.Context({'map_id': id,
                                               'width': width,
