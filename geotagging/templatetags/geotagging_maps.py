@@ -15,6 +15,7 @@ register = template.Library()
 class Javascript(ttag.Tag):
 
     class Meta:
+        block = False
         name = 'geotagging_maps_api'
 
     def render(self, context):
@@ -27,6 +28,7 @@ Loosly based on dajngo-easy-maps: https://bitbucket.org/kmike/django-easy-maps/o
 """
 class MapObjects(ttag.Tag):
     class Meta:
+        block = False
         name = 'geotagging_map'
     
     objects = ttag.Arg(positional=True)
