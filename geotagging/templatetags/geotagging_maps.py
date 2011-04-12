@@ -37,6 +37,7 @@ class MapObjects(ttag.Tag):
     height = ttag.Arg(required=False)
     zoom = ttag.Arg(required=False)
     static = ttag.Arg(required=False)
+    extra = ttag.Arg(required=False)
 
     def render(self, context):
         data = self.resolve(context)
@@ -45,6 +46,7 @@ class MapObjects(ttag.Tag):
         height = data.get('height', None)
         zoom = data.get('zoom', None)
         static = data.get('static', None)
+        extra = data.get('extra', [])
 
         context['request'].session['geotagging_map_counter'] = (
             context['request'].session.get('geotagging_map_counter', 0) + 1)
@@ -84,6 +86,7 @@ class MapObjects(ttag.Tag):
                         'height': height,
                         'latlng': latlng,
                         'markers': markers,
+                        'extra': extra,
                         'zoom': zoom or getattr(settings, 'DEFAULT_ZOOM', 16),
                         }))
 
@@ -94,6 +97,7 @@ class MapObjects(ttag.Tag):
                     'height': height,
                     'latlng': latlng,
                     'markers': markers,
+                    'extra': extra,
                     'zoom': zoom or getattr(settings, 'DEFAULT_ZOOM', 16),
                     }))
 
