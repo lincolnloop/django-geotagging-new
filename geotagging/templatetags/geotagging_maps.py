@@ -46,7 +46,7 @@ class MapObjects(ttag.Tag):
         height = data.get('height', None)
         zoom = data.get('zoom', None)
         static = data.get('static', None)
-        extra = data.get('extra', [])
+        extra = data.get('extra', None)
 
         context['request'].session['geotagging_map_counter'] = (
             context['request'].session.get('geotagging_map_counter', 0) + 1)
