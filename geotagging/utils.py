@@ -2,6 +2,14 @@ import json
 import httplib, urllib
 import itertools
 
+from collections import defaultdict
+try:
+    from scikits.learn.cluster import KMeans, AffinityPropagation
+except ImportError, e:
+    pass
+
+from django.conf import settings
+
 from geotagging.models import PointGeoTag
 
 class GoogleApiException(Exception):
@@ -80,3 +88,45 @@ def google_TSP(waypoints=[], max_waypoints=8):
             [google_TSP_call([i for i in waypoints if i]) 
              for waypoints in waypoint_iter]))
 
+
+def cluster_objects(objects):
+    """
+    Return a list of objects clustered by geographical position.
+
+    :param objects: The list of objects or a queryset. The objects
+    must be an instance of PointGeoTag or implement
+    `get_point_coordinates(as_string, inverted)` to obtain the
+    coordinates
+
+    :returns: A list of clusters. Example: [[<p1>, <p2>], [<p3>, <p4>, <p5>]]
+    """
+    X = np.array([list(i.get_point_coordinates(as_string=False, inverted=True))
+                  for i in objects])
+
+    # Afinity propagation. 
+    # This way we can determine the number of clusters automatically
+    # X_norms = np.sum(X*X, axis=1)
+    # S = - X_norms[:,np.newaxis] - X_norms[np.newaxis,:] + 2 * np.dot(X, X.T)
+    # p = 10*np.median(S)
+
+    # af = AffinityPropagation()
+    # af.fit(S, p)
+    # cluster_centers_indices = af.cluster_centers_indices_
+    # labels = af.labels_
+    
+    # n_clusters_ = len(cluster_centers_indices)
+
+    n_items = len(X)
+    max_items = getattr(settings, 'ITEMS_PER_BUCKET', 10)
+    n_clusters = n_items / max_items
+    n_clusters += n_items % max_items == 0 and 0 or 1
+
+    # KMeans. 
+    # If we want a pre-specified number of clusters this is the way to go 
+    km = KMeans(k=n_clusters, init='k-means++')
+    km.fit(X)
+
+    clusters = defaultdict(list)
+    for i, cluster_id in enumerate(km.labels_):
+        clusters[cluster_id].append(objects[i])
+    return clusters.values()

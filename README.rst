@@ -1,9 +1,18 @@
 ==============
- Installation
+ Requirements
 ==============
 
-TODO: complete this after packaging
-pip install.. etc, etc...
+For the clustering:
+
+ * scikit.learn
+
+For the template tags:
+
+ * django-ttags    
+
+==============
+ Installation
+==============
 
 Via ``pip``::
     
