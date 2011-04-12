@@ -120,7 +120,7 @@ def cluster_objects(objects, optimize_within_clusters=False):
     n_items = len(X)
     max_items = getattr(settings, 'ITEMS_PER_BUCKET', 10)
     n_clusters = n_items / max_items
-    n_clusters += n_items % max_items == 0 and 0 or 1
+    #n_clusters += n_items % max_items == 0 and 0 or 1
 
     # KMeans. 
     # If we want a pre-specified number of clusters this is the way to go 
