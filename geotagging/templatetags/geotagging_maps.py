@@ -58,14 +58,15 @@ class MapObjects(ttag.Tag):
             markers = [{'latlng':latlng}]
         elif isinstance(objects, QuerySet) or isinstance(objects, list):
             if len(objects) == 0:
-                centroid = Point(13.0043792701320360, 55.5996869012237553)
+                centroid = (13.0043792701320360, 55.5996869012237553)
             elif not getattr(settings, 'USE_GEOGRAPHY', True):
                 centroid = objects.collect().envelope.centroid
                 gz = GoogleZoom()
                 zoom = gz.get_zoom(objects.unionagg())
             else:
-                centroid = objects[0].geotagging_point
-            latlng = '%s,%s' % (centroid.y, centroid.x)
+                centroid = objects[0].get_point_coordinates(as_string=False, 
+                                                            inverted=True)
+            latlng = '%s,%s' % (centroid[0], centroid[1])
             markers = [{'latlng': i.get_point_coordinates(as_string=True, inverted=True),
                         'object': i} for i in objects]
         else:

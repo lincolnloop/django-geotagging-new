@@ -187,9 +187,33 @@ Need documentation for the maps feature. Some stuff to remember when documenting
  * The first parameter must be either a PointGeoTag subclass, a
    queryset of PointGeoTag subclasses, a list of PointGeoTag subclases
    or a LatLong string.
- * Add the reset context processor to avoid map ids from increasing
+ * Add the reset context processor to avoid map ids from increasing:
+    'django.core.context_processors.request',
+    'geotagging.context_processors.map_counter_reset',
  * Document what's available to the template
  * Missing stuff (make markers clickable, avoid markers from overlapping)
+
+Including maps in templates
+---------------------------
+
+To start including maps you need to make sure the request and
+map_counter_reset context processors are eneabled::
+
+    TEMPLATE_CONTEXT_PROCESSORS += (
+        'django.core.context_processors.request',
+        'geotagging.context_processors.map_counter_reset',
+    )
+
+and that the views use RequestContext.
+
+That should be enough for static maps.
+
+For dynamic maps the views should include the required javascript::
+
+    {% block extra_head %}
+    {% geotagging_maps_api %}
+    <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js"></script>
+    {% endblock %}
 
 
 Template
@@ -202,6 +226,7 @@ Here's a basic template to include some maps::
     
     {% block extra_head %}
     {% geotagging_maps_api %}
+    <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js"></script>
     {% endblock %}
     
     {% block content %}
