@@ -118,7 +118,7 @@ def cluster_objects(objects, optimize_within_clusters=False):
     # n_clusters_ = len(af.cluster_centers_indices_)
 
     n_items = len(X)
-    max_items = getattr(settings, 'ITEMS_PER_BUCKET', 10)
+    max_items = getattr(settings, 'ITEMS_PER_BUCKET', 10) - 1
     n_clusters = n_items / max_items
     #n_clusters += n_items % max_items == 0 and 0 or 1
 
