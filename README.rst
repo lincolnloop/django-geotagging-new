@@ -212,8 +212,13 @@ For dynamic maps the views should include the required javascript::
 
     {% block extra_head %}
     {% geotagging_maps_api %}
-    <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js"></script>
     {% endblock %}
+
+
+Settings
+========
+
+DEFAULT_ZOOM
 
 
 Template

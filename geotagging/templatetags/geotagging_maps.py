@@ -78,22 +78,24 @@ class MapObjects(ttag.Tag):
 
         if static=="true":
             t = template.loader.get_template('geotagging/staticmap.html')
-            return t.render(template.Context({'map_id': id,
-                                              'width': width,
-                                              'height': height,
-                                              'latlng': latlng,
-                                              'markers': markers,
-                                              'zoom': zoom,
-                                              }))
+            return t.render(template.Context({
+                        'map_id': id,
+                        'width': width,
+                        'height': height,
+                        'latlng': latlng,
+                        'markers': markers,
+                        'zoom': zoom or getattr(settings, 'DEFAULT_ZOOM', 16),
+                        }))
 
         t = template.loader.get_template('geotagging/map.html')
-        return t.render(template.Context({'map_id': id,
-                                          'width': width,
-                                          'height': height,
-                                          'latlng': latlng,
-                                          'markers': markers,
-                                          'zoom': zoom,
-                                          }))
+        return t.render(template.Context({
+                    'map_id': id,
+                    'width': width,
+                    'height': height,
+                    'latlng': latlng,
+                    'markers': markers,
+                    'zoom': zoom or getattr(settings, 'DEFAULT_ZOOM', 16),
+                    }))
 
 register.tag(MapObjects)
 
