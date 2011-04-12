@@ -90,14 +90,17 @@ def google_TSP(waypoints=[], max_waypoints=8):
              for waypoints in waypoint_iter]))
 
 
-def cluster_objects(objects):
+def cluster_objects(objects, optimize_within_clusters=False):
     """
     Return a list of objects clustered by geographical position.
 
     :param objects: The list of objects or a queryset. The objects
     must be an instance of PointGeoTag or implement
-    `get_point_coordinates(as_string, inverted)` to obtain the
-    coordinates
+    `get_point_coordinates(self, as_string=False, inverted=False)` to
+    obtain the coordinates
+
+    :param optimize_within_clusters: a boolean specifying if the
+    clusters should be ordered based on the (near-)optimal route.
 
     :returns: A list of clusters. Example: [[<p1>, <p2>], [<p3>, <p4>, <p5>]]
     """
@@ -109,13 +112,9 @@ def cluster_objects(objects):
     # X_norms = np.sum(X*X, axis=1)
     # S = - X_norms[:,np.newaxis] - X_norms[np.newaxis,:] + 2 * np.dot(X, X.T)
     # p = 10*np.median(S)
-
     # af = AffinityPropagation()
     # af.fit(S, p)
-    # cluster_centers_indices = af.cluster_centers_indices_
-    # labels = af.labels_
-    
-    # n_clusters_ = len(cluster_centers_indices)
+    # n_clusters_ = len(af.cluster_centers_indices_)
 
     n_items = len(X)
     max_items = getattr(settings, 'ITEMS_PER_BUCKET', 10)
@@ -127,7 +126,17 @@ def cluster_objects(objects):
     km = KMeans(k=n_clusters, init='k-means++')
     km.fit(X)
 
-    clusters = defaultdict(list)
+    cluster_dict = defaultdict(list)
     for i, cluster_id in enumerate(km.labels_):
-        clusters[cluster_id].append(objects[i])
-    return clusters.values()
+        cluster_dict[cluster_id].append(objects[i])
+
+    clusters = cluster_dict.values()
+    if optimize_within_clusters:
+        for cluster in clusters:
+            if len(cluster) > 2:
+                print 'calling'
+                print google_TSP(cluster)
+            else:
+                print cluster
+
+    return clusters
