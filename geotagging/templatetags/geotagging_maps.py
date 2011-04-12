@@ -45,7 +45,7 @@ class MapObjects(ttag.Tag):
         width = data.get('width', None)
         height = data.get('height', None)
         zoom = data.get('zoom', None)
-        static = data.get('static', None)
+        static = data.get('static', None) == "true"
         extra = data.get('extra', None)
 
         context['request'].session['geotagging_map_counter'] = (
@@ -66,8 +66,11 @@ class MapObjects(ttag.Tag):
                 gz = GoogleZoom()
                 zoom = gz.get_zoom(objects.unionagg())
             else:
-                centroid = None
-    
+                if static:
+                    centroid = None
+                else:
+                    centroid = objects[0].get_point_coordinates(as_string=False, 
+                                                                inverted=True)
             if centroid:
                 latlng = '%s,%s' % (centroid[0], centroid[1])
             else:
@@ -81,7 +84,7 @@ class MapObjects(ttag.Tag):
                 'a list of PointGeoTag subclases or a LatLong string. '
                 'A %s was given' % type(objects))
 
-        if static=="true":
+        if static:
             t = template.loader.get_template('geotagging/staticmap.html')
             return t.render(template.Context({
                         'map_id': id,
