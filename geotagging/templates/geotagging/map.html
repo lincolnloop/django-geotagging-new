@@ -14,7 +14,7 @@
 
             {% block map_options_js %}
             var mapOptions = {
-                zoom: {{ zoom }},
+                zoom: {% if zoom %}{{ zoom }}{% else %}16{% endif %},
                 center: latlng,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
