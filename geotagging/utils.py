@@ -4,6 +4,7 @@ import itertools
 
 from collections import defaultdict
 try:
+    import numpy as np
     from scikits.learn.cluster import KMeans, AffinityPropagation
 except ImportError, e:
     pass
