@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-geotagging-new',
-    version='0.1.2',
+    version='0.1.4',
     description=('This is a geotagging application. '
                  'It can be used to localize your content.'),
     author='Nicolas Lara',
