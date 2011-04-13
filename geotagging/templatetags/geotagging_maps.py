@@ -39,13 +39,23 @@ class MapObjects(ttag.Tag):
     static = ttag.Arg(required=False, keyword=True)
     extra = ttag.Arg(required=False, keyword=True)
 
+    def get_zoom(self, objects, static):
+        if len(objects) == 0 or static:
+            return None
+        if not getattr(settings, 'USE_GEOGRAPHY', True):
+            gz = GoogleZoom()
+            zoom = gz.get_zoom(objects.unionagg())
+            return zoom
+        else:
+            #improve zoom calculation for geography case
+            return None
+
+
     def get_centroid_lnglat(self, objects, static):
         if len(objects) == 0 or static:
             return None
         if not getattr(settings, 'USE_GEOGRAPHY', True):
             centroid = objects.collect().envelope.centroid
-            gz = GoogleZoom()
-            zoom = gz.get_zoom(objects.unionagg())
         else:
             #To-Do: improve centroid calculation for geography case.
             centroid = objects[0].get_point_coordinates(as_string=False, 
@@ -76,6 +86,7 @@ class MapObjects(ttag.Tag):
             latlng = self.get_centroid_lnglat(objects, static)
             markers = [{'latlng': i.get_point_coordinates(as_string=True, inverted=True),
                         'object': i} for i in objects]
+            zoom = self.get_zoom(objects, static)
         else:
             raise template.TemplateSyntaxError(
                 'The first parameter must be either a PointGeoTag subclass, '
