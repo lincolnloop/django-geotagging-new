@@ -33,11 +33,11 @@ class MapObjects(ttag.Tag):
         name = 'geotagging_map'
     
     objects = ttag.Arg(positional=True)
-    width = ttag.Arg(required=False)
-    height = ttag.Arg(required=False)
-    zoom = ttag.Arg(required=False)
-    static = ttag.Arg(required=False)
-    extra = ttag.Arg(required=False)
+    width = ttag.Arg(required=False, keyword=True)
+    height = ttag.Arg(required=False, keyword=True)
+    zoom = ttag.Arg(required=False, keyword=True)
+    static = ttag.Arg(required=False, keyword=True)
+    extra = ttag.Arg(required=False, keyword=True)
 
     def render(self, context):
         data = self.resolve(context)
