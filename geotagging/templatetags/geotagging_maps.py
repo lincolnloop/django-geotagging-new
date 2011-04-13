@@ -32,7 +32,7 @@ class MapObjects(ttag.Tag):
     class Meta:
         name = 'geotagging_map'
     
-    objects = ttag.Arg(positional=True)
+    objects = ttag.Arg()
     width = ttag.Arg(required=False, keyword=True)
     height = ttag.Arg(required=False, keyword=True)
     zoom = ttag.Arg(required=False, keyword=True)
