@@ -70,9 +70,9 @@ class MapObjects(ttag.Tag):
                     centroid = None
                 else:
                     centroid = objects[0].get_point_coordinates(as_string=False, 
-                                                                inverted=True)
+                                                                inverted=False)
             if centroid:
-                latlng = '%s,%s' % (centroid[0], centroid[1])
+                latlng = '%s,%s' % (centroid[1], centroid[0])
             else:
                 latlng = None
             markers = [{'latlng': i.get_point_coordinates(as_string=True, inverted=True),
