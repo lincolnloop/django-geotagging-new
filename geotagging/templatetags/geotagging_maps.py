@@ -1,5 +1,6 @@
 import ttag
 
+from django.db import models
 from django import template
 from django.template.loader import render_to_string
 from django.db.models.query import QuerySet
@@ -95,6 +96,9 @@ class MapObjects(ttag.Tag):
         if isinstance(objects, PointGeoTag):
             latlng = objects.get_point_coordinates(as_string=True, inverted=True)
             markers = [{'latlng':latlng, 'object': objects}]
+        elif isinstance(objects, models.Model):
+            latlng = objects.get_point_coordinates(as_string=True, inverted=True)
+            markers = [{'latlng':latlng}]
         elif isinstance(objects, basestring):
             latlng = objects
             markers = [{'latlng':latlng}]
@@ -107,7 +111,8 @@ class MapObjects(ttag.Tag):
             raise template.TemplateSyntaxError(
                 'The first parameter must be either a PointGeoTag subclass, '
                 'a queryset of PointGeoTag subclasses, '
-                'a list of PointGeoTag subclases or a LatLong string. '
+                'a list of PointGeoTag subclases, implement get_point_coordinates '
+                'or be a LatLong string. '
                 'A %s was given' % type(objects))
 
         template_name = static and 'geotagging/staticmap.html' or 'geotagging/map.html'
