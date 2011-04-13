@@ -39,6 +39,20 @@ class MapObjects(ttag.Tag):
     static = ttag.Arg(required=False, keyword=True)
     extra = ttag.Arg(required=False, keyword=True)
 
+    def get_centroid_lnglat(self, objects, static):
+        if len(objects) == 0 or static:
+            return None
+        if not getattr(settings, 'USE_GEOGRAPHY', True):
+            centroid = objects.collect().envelope.centroid
+            gz = GoogleZoom()
+            zoom = gz.get_zoom(objects.unionagg())
+        else:
+            #To-Do: improve centroid calculation for geography case.
+            centroid = objects[0].get_point_coordinates(as_string=False, 
+                                                        inverted=False)
+        return '%s,%s' % (centroid[1], centroid[0])
+            
+
     def render(self, context):
         data = self.resolve(context)
         objects = data.get('objects', None)
@@ -59,22 +73,7 @@ class MapObjects(ttag.Tag):
             latlng = objects
             markers = [{'latlng':latlng}]
         elif isinstance(objects, QuerySet) or isinstance(objects, list):
-            if len(objects) == 0:
-                centroid = None
-            elif not getattr(settings, 'USE_GEOGRAPHY', True):
-                centroid = objects.collect().envelope.centroid
-                gz = GoogleZoom()
-                zoom = gz.get_zoom(objects.unionagg())
-            else:
-                if static:
-                    centroid = None
-                else:
-                    centroid = objects[0].get_point_coordinates(as_string=False, 
-                                                                inverted=True)
-            if centroid:
-                latlng = '%s,%s' % (centroid[0], centroid[1])
-            else:
-                latlng = None
+            latlng = self.get_centroid_lnglat(objects, static)
             markers = [{'latlng': i.get_point_coordinates(as_string=True, inverted=True),
                         'object': i} for i in objects]
         else:
@@ -84,19 +83,9 @@ class MapObjects(ttag.Tag):
                 'a list of PointGeoTag subclases or a LatLong string. '
                 'A %s was given' % type(objects))
 
-        if static:
-            t = template.loader.get_template('geotagging/staticmap.html')
-            return t.render(template.Context({
-                        'map_id': id,
-                        'width': width,
-                        'height': height,
-                        'latlng': latlng,
-                        'markers': markers,
-                        'extra': extra,
-                        'zoom': zoom,
-                        }))
+        template_name = static and 'geotagging/staticmap.html' or 'geotagging/map.html'
 
-        t = template.loader.get_template('geotagging/map.html')
+        t = template.loader.get_template(template_name)
         return t.render(template.Context({
                     'map_id': id,
                     'width': width,
