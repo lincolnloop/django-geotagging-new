@@ -47,7 +47,15 @@ class MapObjects(ttag.Tag):
             zoom = gz.get_zoom(objects.unionagg())
             return zoom
         else:
-            #improve zoom calculation for geography case
+            coords = [i.get_point_coordinates(as_string=False, inverted=True)
+                      for i in objects]
+            sw = min(i[0] for i in coords), min(i[1] for i in coords)
+            ne = max(i[0] for i in coords), max(i[1] for i in coords)
+
+            return {'bounds':True, 'sw':'%s,%s'%sw, 'ne':'%s,%s'%ne}
+
+            #improve zoom calculation for geography case and
+            #non-geodjango latlngs
             return None
 
 
@@ -57,9 +65,17 @@ class MapObjects(ttag.Tag):
         if not getattr(settings, 'USE_GEOGRAPHY', True):
             centroid = objects.collect().envelope.centroid
         else:
-            #To-Do: improve centroid calculation for geography case.
-            centroid = objects[0].get_point_coordinates(as_string=False, 
-                                                        inverted=False)
+            #this is not a real geographic calculation, but handles
+            #the case of external latlng.  
+            #In the future this should be split between geography and
+            #non-geodjango latlngs
+            coords = [i.get_point_coordinates(as_string=False, inverted=False)
+                      for i in objects]
+            n_objects = len(objects)
+            x_avg = sum(i[0] for i in coords) / n_objects
+            y_avg = sum(i[1] for i in coords) / n_objects
+            centroid = (x_avg, y_avg)
+
         return '%s,%s' % (centroid[1], centroid[0])
             
 

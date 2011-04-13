@@ -14,13 +14,19 @@
 
             {% block map_options_js %}
             var mapOptions = {
-                zoom: {% if zoom %}{{ zoom }}{% else %}16{% endif %},
+                zoom: {% if zoom and not zoom.bounds %}{{ zoom }}{% else %}12{% endif %},
                 center: latlng,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
             {% endblock %}
-
             var map = new google.maps.Map(mapElem, mapOptions);
+
+            {% if zoom.bounds %}
+            var bounds = new google.maps.LatLngBounds(
+                                         new google.maps.LatLng({{ zoom.sw }}), 
+                                         new google.maps.LatLng({{ zoom.ne }}))
+            map.fitBounds(bounds);
+            {% endif %}
 
             {% block extra_map_js %}
             var markers = [];
