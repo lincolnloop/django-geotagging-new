@@ -35,23 +35,33 @@ def google_TSP_call(waypoints):
     """
     This is the function that does the calling. It expects the
     number of waypoints to always be within the allowed range.
+
+    The points will be enhanced with the parameters:
+     - geotagging_time: which determines the time needed to get there
+       from the previous location
     """
-    origin = w_origin = waypoints.pop(0)
-    destination = w_destination = waypoints.pop()
-    coordinates = waypoints
+    if len(waypoints)<3:
+        params = urllib.urlencode({'origin':origin, 'destination':destination,
+                                   'sensor':'false'})
+    else:
+    
+        origin = w_origin = waypoints.pop(0)
+        destination = w_destination = waypoints.pop()
+        coordinates = waypoints
 
-    #if isinstance(waypoints[0], PointGeoTag):
-    if not isinstance(waypoints[0], basestring):
-        coordinates = [i.get_point_coordinates(as_string=True, inverted=True) 
-                       for i in waypoints]
+        #if isinstance(waypoints[0], PointGeoTag):
+        if not isinstance(waypoints[0], basestring):
+            coordinates = [i.get_point_coordinates(as_string=True, inverted=True) 
+                           for i in waypoints]
 
-        origin = w_origin.get_point_coordinates(as_string=True, inverted=True)
-        destination = w_destination.get_point_coordinates(as_string=True, inverted=True)
+            origin = w_origin.get_point_coordinates(as_string=True, inverted=True)
+            destination = w_destination.get_point_coordinates(as_string=True, inverted=True)
+
+        params = urllib.urlencode({'origin':origin, 'destination':destination, 
+                                   'waypoints':'|'.join(['optimize:true']+coordinates), 
+                                   'sensor':'false'})
 
     conn = httplib.HTTPConnection("maps.googleapis.com")
-    params = urllib.urlencode({'origin':origin, 'destination':destination, 
-                               'waypoints':'|'.join(['optimize:true']+coordinates), 
-                               'sensor':'false'})
     conn.request("GET", '/maps/api/directions/json?%s' % params)
     response = conn.getresponse()
 
@@ -63,6 +73,9 @@ def google_TSP_call(waypoints):
     sorted_points = ([w_origin] + 
                      [waypoints[i] for i in routes['routes'][0]['waypoint_order']] + 
                      [w_destination])
+
+    for i, leg in enumerate(routes['routes'][0]['legs']):
+        sorted_points[i].geotagging_time = leg['duration']
 
     return sorted_points
 
@@ -133,12 +146,5 @@ def cluster_objects(objects, optimize_within_clusters=False):
 
     clusters = cluster_dict.values()
     if optimize_within_clusters:
-        new_clusters = []
-        for cluster in clusters:
-            if len(cluster) > 3:
-                new_clusters.append(google_TSP(cluster))
-            else:
-                new_clusters.append(cluster)
-        return new_clusters
-
+        return [google_TSP(cluster) for cluster in clusters]
     return clusters
