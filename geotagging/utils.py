@@ -85,11 +85,13 @@ def split_num(k, l):
         nk-=1
     return nk
 
-def google_TSP(waypoints=[], max_waypoints=8):
+def google_TSP(waypoints=[], max_waypoints=8, round_trip=False):
     """
     Queries google for a the optimal order in which the points should
     be visited.
     """
+    if round_trip:
+        waypoints.append(waypoints[0])
     n = len(waypoints)
     if n>max_waypoints+2:
         #use some sort of heuristic to order and split
@@ -101,10 +103,10 @@ def google_TSP(waypoints=[], max_waypoints=8):
 
     return list(itertools.chain.from_iterable(
             [google_TSP_call([i for i in waypoints if i]) 
-             for waypoints in waypoint_iter]))
+             for waypoints in waypoint_iter]))[:-1]
 
 
-def cluster_objects(objects, optimize_within_clusters=False):
+def cluster_objects(objects, optimize_within_clusters=False, round_trip=False):
     """
     Return a list of objects clustered by geographical position.
 
@@ -146,5 +148,5 @@ def cluster_objects(objects, optimize_within_clusters=False):
 
     clusters = cluster_dict.values()
     if optimize_within_clusters:
-        return [google_TSP(cluster) for cluster in clusters]
+        return [google_TSP(cluster, round_trip=round_trip) for cluster in clusters]
     return clusters
