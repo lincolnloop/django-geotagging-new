@@ -41,6 +41,8 @@ def google_TSP_call(waypoints):
        from the previous location
     """
     if len(waypoints)<3:
+        origin = waypoints.pop(0)
+        destination = waypoints.pop(0)
         params = urllib.urlencode({'origin':origin, 'destination':destination,
                                    'sensor':'false'})
     else:
