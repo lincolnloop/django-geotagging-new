@@ -40,28 +40,22 @@ def google_TSP_call(waypoints):
      - geotagging_time: which determines the time needed to get there
        from the previous location
     """
-    if len(waypoints)<3:
-        origin = waypoints.pop(0)
-        destination = waypoints.pop(0)
-        params = urllib.urlencode({'origin':origin, 'destination':destination,
-                                   'sensor':'false'})
-    else:
-    
-        origin = w_origin = waypoints.pop(0)
-        destination = w_destination = waypoints.pop()
-        coordinates = waypoints
+    origin = w_origin = waypoints.pop(0)
+    destination = w_destination = waypoints.pop()
+    coordinates = waypoints
 
-        #if isinstance(waypoints[0], PointGeoTag):
-        if not isinstance(waypoints[0], basestring):
-            coordinates = [i.get_point_coordinates(as_string=True, inverted=True) 
-                           for i in waypoints]
+    if not isinstance(origin, basestring):
+        coordinates = [i.get_point_coordinates(as_string=True, inverted=True) 
+                       for i in waypoints]
+        
+        origin = w_origin.get_point_coordinates(as_string=True, inverted=True)
+        destination = w_destination.get_point_coordinates(as_string=True, inverted=True)
+        
+    dict_params = {'origin':origin, 'destination':destination, 'sensor':'false'}
+    if coordinates:
+        dict_params['waypoints'] = '|'.join(['optimize:true']+coordinates)
 
-            origin = w_origin.get_point_coordinates(as_string=True, inverted=True)
-            destination = w_destination.get_point_coordinates(as_string=True, inverted=True)
-
-        params = urllib.urlencode({'origin':origin, 'destination':destination, 
-                                   'waypoints':'|'.join(['optimize:true']+coordinates), 
-                                   'sensor':'false'})
+    params = urllib.urlencode(dict_params)
 
     conn = httplib.HTTPConnection("maps.googleapis.com")
     conn.request("GET", '/maps/api/directions/json?%s' % params)
