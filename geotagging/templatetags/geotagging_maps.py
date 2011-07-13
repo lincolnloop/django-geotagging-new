@@ -95,18 +95,23 @@ class MapObjects(ttag.Tag):
 
         if isinstance(objects, PointGeoTag):
             latlng = objects.get_point_coordinates(as_string=True, inverted=True)
-            markers = [{'latlng':latlng, 'object': objects}]
+            markers = latlng and [{'latlng':latlng, 'object': objects}] or []
         elif isinstance(objects, models.Model):
             latlng = objects.get_point_coordinates(as_string=True, inverted=True)
-            markers = [{'latlng':latlng}]
+            markers = latlng and [{'latlng':latlng}] or []
         elif isinstance(objects, basestring):
             latlng = objects
             markers = [{'latlng':latlng}]
         elif isinstance(objects, QuerySet) or isinstance(objects, list):
-            latlng = self.get_centroid_lnglat(objects, static)
+            if len(objects) > 0:
+                not_null = (objects[0].__class__.objects
+                            .filter(id__in=[i.id for i in objects if i.geotagging_point]))
+            else:
+                not_null = []
+            latlng = self.get_centroid_lnglat(not_null, static)
             markers = [{'latlng': i.get_point_coordinates(as_string=True, inverted=True),
-                        'object': i} for i in objects]
-            zoom = self.get_zoom(objects, static)
+                        'object': i} for i in not_null if i.geotagging_point]
+            zoom = self.get_zoom(not_null, static)
         else:
             raise template.TemplateSyntaxError(
                 'The first parameter must be either a PointGeoTag subclass, '

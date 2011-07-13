@@ -41,6 +41,8 @@ class PointGeoTag(GeoTag):
     geotagging_point = models.PointField(**field_kwargs('point'))
 
     def get_point_coordinates(self, as_string=False, inverted=False):
+        if not self.geotagging_point:
+            return None
         if inverted:
             xy = (self.geotagging_point.y, self.geotagging_point.x)
         else:

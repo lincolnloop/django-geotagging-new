@@ -1,3 +1,5 @@
 {% block map_container %}
+{% if markers %}
 <img src="http://maps.google.com/maps/api/staticmap?{% if latlng %}center={{ latlng }}{% endif %}{% if zoom %}&zoom={{ zoom }}{% endif %}&size={{ width }}x{{ height }}&maptype=roadmap&markers={% if extra %}&{{ extra|safe }}{% endif %}{% for marker in markers %}|{{ marker.latlng }}{% endfor %}&sensor=false"/>
+{% endif %}
 {% endblock %}
