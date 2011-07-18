@@ -102,7 +102,8 @@ def google_TSP(waypoints=[], max_waypoints=8, round_trip=False):
              for waypoints in waypoint_iter]))[:-1]
 
 
-def cluster_objects(objects, optimize_within_clusters=False, round_trip=False):
+def cluster_objects(objects, optimize_within_clusters=False, round_trip=False,
+                    initial=None):
     """
     Return a list of objects clustered by geographical position.
 
@@ -144,5 +145,16 @@ def cluster_objects(objects, optimize_within_clusters=False, round_trip=False):
 
     clusters = cluster_dict.values()
     if optimize_within_clusters:
-        return [google_TSP(cluster, round_trip=round_trip) for cluster in clusters]
+        if initial:
+            result = []
+            for cluster in clusters:
+                if initial in cluster:
+                    cluster.remove(initial)
+                    cluster.insert(0, initial)
+                    result.insert(0, google_TSP(cluster, round_trip=round_trip))
+                else:
+                    result.append(google_TSP(cluster, round_trip=round_trip))
+            return result
+        else:
+            return [google_TSP(cluster, round_trip=round_trip) for cluster in clusters]
     return clusters
