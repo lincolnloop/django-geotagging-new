@@ -118,7 +118,8 @@ def cluster_objects(objects, optimize_within_clusters=False, round_trip=False,
     :returns: A list of clusters. Example: [[<p1>, <p2>], [<p3>, <p4>, <p5>]]
     """
     X = np.array([list(i.get_point_coordinates(as_string=False, inverted=True))
-                  for i in objects])
+                  for i in objects 
+                  if i.get_point_coordinates(as_string=False, inverted=True)])
 
     # Afinity propagation. 
     # This way we can determine the number of clusters automatically
