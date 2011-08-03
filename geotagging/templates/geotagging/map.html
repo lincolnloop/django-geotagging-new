@@ -34,7 +34,9 @@
               var latLng = new google.maps.LatLng({{ marker.latlng }});
               var marker = new google.maps.Marker({
                     'position': latLng,
-                    'title': "{% if marker.object %}{{ marker.object.get_title }}{% endif %}"});
+                    'title': "{% if marker.object %}{{ marker.object.get_title }}{% endif %}",
+                    {% if marker.object.get_marker_image %}'icon':'{{ marker.object.get_marker_image }}',{% endif %}
+              });
               markers.push(marker);
             {% endfor %}
             if (window.MarkerClusterer === undefined){
