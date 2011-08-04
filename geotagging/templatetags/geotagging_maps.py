@@ -104,11 +104,12 @@ class MapObjects(ttag.Tag):
             markers = [{'latlng':latlng}]
         elif isinstance(objects, QuerySet) or isinstance(objects, list):
             if len(objects) > 0:
-                if all(hasattr(i, 'geotagging_point') for i in objects):
-                    not_null = objects
-                else:
+                if all([i.__class__==objects[0].__class__ for i in objects]):
+                    #check for heterogeneous
                     not_null = (objects[0].__class__.objects.filter(
                             id__in=[i.id for i in objects if i.geotagging_point]))
+                else:
+                    not_null = objects
             else:
                 not_null = []
             latlng = self.get_centroid_lnglat(not_null, static)
