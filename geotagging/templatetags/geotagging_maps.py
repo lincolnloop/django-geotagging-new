@@ -43,7 +43,7 @@ class MapObjects(ttag.Tag):
     def get_zoom(self, objects, static):
         if len(objects) == 0 or static:
             return None
-        if (not getattr(settings, 'USE_GEOGRAPHY', True)) and isinstance(objects, QuerySet):
+        if (not getattr(settings, 'USE_GEOGRAPHY', True)) and hasattr(objects, 'unionagg'):
             gz = GoogleZoom()
             zoom = gz.get_zoom(objects.unionagg())
             return zoom
@@ -63,7 +63,7 @@ class MapObjects(ttag.Tag):
     def get_centroid_lnglat(self, objects, static):
         if len(objects) == 0 or static:
             return None
-        if (not getattr(settings, 'USE_GEOGRAPHY', True)) and isinstance(objects, QuerySet):
+        if (not getattr(settings, 'USE_GEOGRAPHY', True)) and hasattr(objects, 'collect'):
             centroid = objects.collect().envelope.centroid
         else:
             #this is not a real geographic calculation, but handles
