@@ -54,11 +54,15 @@ class MapObjects(ttag.Tag):
         count = context['request'].session['geotagging_map_counter']
 
         if isinstance(objects, PointGeoTag):
-            latlng = Point(*map(float,
-                                objects.get_point_coordinates(as_string=True).split(',')))
-            markers = latlng and [{'latlng': latlng, 'object': objects,
-                                   'display': get_display(objects),
-                                   'style': objects.get_map_style()}] or []
+            coords = objects.get_point_coordinates(as_string=True)
+            if coords:
+                latlng = Point(*map(float,
+                                    coords.split(',')))
+                markers = latlng and [{'latlng': latlng, 'object': objects,
+                                       'display': get_display(objects),
+                                       'style': objects.get_map_style()}] or []
+            else:
+                markers = []
         elif isinstance(objects, models.Model):
             latlng = Point(*map(float,
                                 objects.get_point_coordinates(as_string=True).split(',')))
