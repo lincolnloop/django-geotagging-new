@@ -51,5 +51,20 @@ class PointGeoTag(GeoTag):
             return '%s,%s' % xy
         return xy
 
+    def get_map_display(self):
+        return unicode(self)
+
+    def get_marker_image(self):
+        raise NotImplementedError('Implement get_marker_image to change '
+                                  'the default marker')
+
+    def get_map_style(self):
+        style = {}
+        try:
+            style['external_graphic'] = self.get_marker_image()
+        except:
+            pass
+        return style
+        
     class Meta:
         abstract = True
