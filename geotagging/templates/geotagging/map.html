@@ -1,11 +1,23 @@
 {% block map_container %}
+{% comment %}
     <div id="map-canvas-{{ map_id }}"
             style="width: {{ width }}px; height: {{ height }}px;"
          class="geotagging-map-googlemap">
     </div>
+{% endcomment %}
+<div>
+  {% if map_count == 1 %}
+  {{ olmap.media }}
+  {% endif %}
+  {% if show_map %}
+  {{ olmap }}
+  {% endif %}
+</div>
+
 {% endblock %}
 
 {% block map_js %}
+{% comment %}
     <!-- Map creation script -->
     <script type="text/javascript">
         function initialize_map_{{ map_id }}() {
@@ -54,4 +66,5 @@
         google.maps.event.addDomListener(window, 'load', initialize_map_{{ map_id }});
         {% endblock %}
     </script>
+{% endcomment %}
 {% endblock %}
