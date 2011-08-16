@@ -34,7 +34,7 @@ class MapObjects(ttag.Tag):
     height = ttag.Arg(required=False, keyword=True)
     zoom = ttag.Arg(required=False, keyword=True)
     static = ttag.Arg(required=False, keyword=True)
-    extra = ttag.Arg(required=False, keyword=True)
+    cluster = ttag.Arg(required=False, keyword=True)
             
     def render(self, context):
         data = self.resolve(context)
@@ -43,7 +43,7 @@ class MapObjects(ttag.Tag):
         height = data.get('height', None)
         # zoom = data.get('zoom', None)
         static = data.get('static', None) == "true"
-        # extra = data.get('extra', None)
+        cluster = data.get('extra', None) == "true"
 
         #options
         # no popup
@@ -79,7 +79,6 @@ class MapObjects(ttag.Tag):
                         'object': i,
                         'display': get_display(i),
                         'style': get_style(i)} for i in objects if i.geotagging_point]
-
         else:
             raise template.TemplateSyntaxError(
                 'The first parameter must be either a PointGeoTag subclass, '
@@ -99,18 +98,21 @@ class MapObjects(ttag.Tag):
             [i['latlng'], {'html': i['display'],
                            'style': i['style']}] for i in markers
         ]
+
         options = {
             'layers': ['google.streets'],
-            'cluster': True,
-            'cluster_display': 'list',
             'map_div_style': {'width': '%spx'%width, 'height': '%spx'%height},
             'map_options' : {
                 'controls': controls,
-            }
+            },
         }
 
+        if cluster:
+            options.extend({ 'cluster': True,
+                             'cluster_display': 'list', })
+        
         olmap = NSInfoMap(mappable, options)
-        olmap.attrs = {'id': count}
+        olmap.attrs = {'id': 'map-%s'%count}
         t = template.loader.get_template(template_name)
         return t.render(template.Context({'olmap':olmap, 'map_count':count,
                                           'show_map':show_map}))
@@ -120,7 +122,6 @@ register.tag(MapObjects)
 
 """
 To-Do:
- * static
- * different markers
+ * Add proximity display
  * docs
 """
