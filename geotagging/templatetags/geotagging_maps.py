@@ -88,7 +88,7 @@ class MapObjects(ttag.Tag):
                 'or be a LatLong string. '
                 'A %s was given' % type(objects))
 
-        #template_name = static and 'geotagging/staticmap.html' or 'geotagging/map.html'
+        controls = not static and ['Navigation', 'PanZoom',] or [] 
         template_name = 'geotagging/map.html'
             
         show_map = bool(markers)
@@ -104,6 +104,9 @@ class MapObjects(ttag.Tag):
             'cluster': True,
             'cluster_display': 'list',
             'map_div_style': {'width': '%spx'%width, 'height': '%spx'%height},
+            'map_options' : {
+                'controls': controls,
+            }
         }
 
         olmap = NSInfoMap(mappable, options)
