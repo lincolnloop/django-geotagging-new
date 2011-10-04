@@ -9,13 +9,13 @@ from django.contrib.gis.geos import Point
 from geotagging.models import PointGeoTag
 
 register = template.Library()
-from olwidget.widgets import InfoMap
+from olwidget.widgets import InfoMap, InfoLayer, Map
 
 
-class NSInfoMap(InfoMap):
+class NSMap(Map):
     def render(self, name, value, attrs=None):
         attrs = getattr(self, 'attrs', None)
-        return super(NSInfoMap, self).render(name, value, attrs)
+        return super(NSMap, self).render(name, value, attrs)
 
 
 def get_display(obj):
@@ -63,22 +63,34 @@ class MapObjects(ttag.Tag):
                                        'style': objects.get_map_style()}] or []
             else:
                 markers = []
+            sets = {'everything':markers}
         elif isinstance(objects, models.Model):
             latlng = Point(*map(float,
                                 objects.get_point_coordinates(as_string=True).split(',')))
             markers = latlng and [{'latlng': latlng,
                                    'display': get_display(objects),
                                    'style': objects.get_map_style()}] or []
+            sets = {'everything':markers}
         elif isinstance(objects, basestring):
             latlng = Point(*map(float, objects.split(',')))
             markers = [{'latlng':latlng,
                         'display': get_display(latlng),
                         'style': get_style(latlng)}]
+            sets = {'everything':markers}
         elif isinstance(objects, QuerySet) or isinstance(objects, list):
             markers = [{'latlng': i.geotagging_point,
                         'object': i,
                         'display': get_display(i),
                         'style': get_style(i)} for i in objects if i.geotagging_point]
+            sets = {'everything':markers}
+        elif isinstance(objects, dict):
+            sets = {}
+            for k, v in objects.items():
+                markers = [{'latlng': i.geotagging_point,
+                            'object': i,
+                            'display': get_display(i),
+                            'style': get_style(i)} for i in v if i.geotagging_point]
+                sets[k] = markers
         else:
             raise template.TemplateSyntaxError(
                 'The first parameter must be either a PointGeoTag subclass, '
@@ -87,18 +99,24 @@ class MapObjects(ttag.Tag):
                 'or be a LatLong string. '
                 'A %s was given' % type(objects))
 
+        layers = []
+        
+        for name, markers in sets.items():
+            show_map = bool(markers)
+            for marker in markers:
+                marker['latlng'].srid = 4326
+
+            mappable = [
+                [i['latlng'], {'html': i['display'],
+                               'style': i['style']}] for i in markers
+            ]
+
+            layers.append(InfoLayer(mappable, {'name':name}))
+
+        #map configuration
         controls = not static and ['Navigation', 'PanZoom',] or [] 
         template_name = 'geotagging/map.html'
-            
-        show_map = bool(markers)
-        for marker in markers:
-            marker['latlng'].srid = 4326
-
-        mappable = [
-            [i['latlng'], {'html': i['display'],
-                           'style': i['style']}] for i in markers
-        ]
-
+        
         options = {
             'layers': ['google.streets'],
             'map_div_style': {'width': '%spx'%width, 'height': '%spx'%height},
@@ -110,9 +128,9 @@ class MapObjects(ttag.Tag):
         if cluster:
             options.extend({ 'cluster': True,
                              'cluster_display': 'list', })
-        
-        olmap = NSInfoMap(mappable, options)
-        olmap.attrs = {'id': 'map-%s'%count}
+
+        olmap = NSMap(layers, options)
+        olmap.attrs = {'id': 'map-%s'%count,}
         t = template.loader.get_template(template_name)
         return t.render(template.Context({'olmap':olmap, 'map_count':count,
                                           'show_map':show_map}))
