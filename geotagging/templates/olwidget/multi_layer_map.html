@@ -8,4 +8,14 @@
     );
     olwidget.gt_maps = olwidget.gt_maps || {}
     olwidget.gt_maps["{{ id }}"] = map;
+
+    olwidget.gt_features = olwidget.gt_features || {}
+    for ( layer in map.layers ) {
+        if (map.layers[layer].features != undefined){
+            for (var f in map.layers[layer].features){
+                olwidget.gt_features[map.layers[layer].features[f].attributes.style.gtIdentifier] = map.layers[layer].features[f]
+            }
+        }
+    }
+
 </script>

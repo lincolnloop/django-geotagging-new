@@ -106,7 +106,7 @@ class MapObjects(ttag.Tag):
             for marker in markers:
                 marker['latlng'].srid = 4326
                 obj = marker['object']
-                marker['style']['gt_identifier'] = ('.'.join((obj._meta.module_name,
+                marker['style']['gt_identifier'] = ('.'.join(("map-"+str(count),
                                                               obj.__class__.__name__,
                                                               str(obj.id))))
             mappable = [
