@@ -9,7 +9,7 @@ from django.contrib.gis.geos import Point
 from geotagging.models import PointGeoTag
 
 register = template.Library()
-from olwidget.widgets import InfoMap, InfoLayer, Map
+from olwidget.widgets import InfoLayer, Map
 
 
 class NSMap(Map):
@@ -105,7 +105,10 @@ class MapObjects(ttag.Tag):
             show_map = bool(markers)
             for marker in markers:
                 marker['latlng'].srid = 4326
-
+                obj = marker['object']
+                marker['style']['gt_identifier'] = ('.'.join((obj._meta.module_name,
+                                                              obj.__class__.__name__,
+                                                              str(obj.id))))
             mappable = [
                 [i['latlng'], {'html': i['display'],
                                'style': i['style']}] for i in markers
