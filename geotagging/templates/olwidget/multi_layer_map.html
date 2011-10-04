@@ -1,0 +1,11 @@
+<div id="{{ id }}"></div>
+{{ layer_html|join:"" }}
+<script type="text/javascript">
+    map = new olwidget.Map("{{ id }}", [
+            {{ layer_js|join:"," }}
+        ], 
+        {{ map_opts|safe }}
+    );
+    olwidget.geotagging_maps = olwidget.geotagging_maps || {}
+    olwidget.geotagging_maps["{{ id }}"] = map;
+</script>
