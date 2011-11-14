@@ -1,3 +1,11 @@
+============
+ Disclaimer
+============
+
+This is a WIP and is not to be used in production unless you know what you're doing.
+
+The documentation also outdated. But it shouldn't be for long.
+
 ==============
  Requirements
 ==============
