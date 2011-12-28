@@ -1,6 +1,7 @@
     <script type="text/javascript">
         var map = new $$.Map({
             id: "{{ map_id }}",
+            static: {% if options.static %}true{% else %}false{% endif %},
         })
         $$.maps.add(map);
 
@@ -21,5 +22,9 @@
             ])
         }));
         {% endfor %}
-        map.view.center()
+        {% if options.center_on %}
+        map.view.center("{{ options.center_on }}");
+        {% else %}
+        map.view.center();
+        {% endif %}
     </script>

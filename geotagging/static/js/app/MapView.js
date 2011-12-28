@@ -30,13 +30,12 @@ $$.MapView = Backbone.View.extend({
     
     settings: {
         id: undefined,
-        lat: 51.50121,
-        lng: -0.12489,
         el: undefined,
         maxZoom: 14,
         zoomLayer: undefined,
         mapElemId: '',
-        layerEl: ''
+        layerEl: '',
+        static: false,
     },
 
     initialize: function (options) {
@@ -64,8 +63,11 @@ $$.MapView = Backbone.View.extend({
             {numZoomLevels: 20}
         ));
 
-        // center the map
-        this.map.setCenter(new OpenLayers.LonLat(this.settings.lng, this.settings.lat), 14);
+        if ( this.settings.static ){
+            $(this.map.controls).each(function(i, control){
+                control.deactivate(); 
+                this.map.removeControl(control)});
+        }
     },
 
     addOne: function (layer) {
@@ -73,6 +75,7 @@ $$.MapView = Backbone.View.extend({
         
         layer.set({map: this.map});
         
+        //Does this leak memory?
         var view = new $$.LayerView({
             model: layer
         });

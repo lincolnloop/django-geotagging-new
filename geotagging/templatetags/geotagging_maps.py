@@ -21,18 +21,23 @@ class MapJS(ttag.Tag):
     class Meta:
         name = 'maps_js'
     
-    id = ttag.Arg()
     objects = ttag.Arg()
+    as_ = ttag.ConstantArg()
+    prefix = ttag.Arg()
+    counter = ttag.Arg(required=False)
     zoom = ttag.Arg(required=False, keyword=True)
     static = ttag.Arg(required=False, keyword=True)
+    center_on = ttag.Arg(required=False, keyword=True)
     cluster = ttag.Arg(required=False, keyword=True)
             
     def render(self, context):
         data = self.resolve(context)
-        id = data.get('id', None)
+        prefix = data.get('prefix', None)
+        counter = data.get('counter', None)
         objects = data.get('objects', None)
         zoom = data.get('zoom', None)
         static = data.get('static', None) == "true"
+        center_on = data.get('center_on', None)
         cluster = data.get('extra', None) == "true"
 
         # This should go to cache or use context.render_context
@@ -92,16 +97,20 @@ class MapJS(ttag.Tag):
             layers.append({'name':name, 'items':markers})
 
         #map configuration
-        #controls = not static and ['Navigation', 'PanZoom',] or [] 
         template_name = 'geotagging/maps_js.html'
+
+        options = {'static':static, 'center_on':center_on}
         
         #if cluster:
         #    options.extend({ 'cluster': True,
         #                     'cluster_display': 'list', })
 
         t = template.loader.get_template(template_name)
+        map_id = counter and (prefix % counter) or prefix
+        
         return t.render(template.RequestContext(context['request'],
-                                                {'layers':layers, 'map_id':id}))
+                                                {'layers':layers, 'map_id':map_id,
+                                                 'options':options}))
 
 register.tag(MapJS)
 

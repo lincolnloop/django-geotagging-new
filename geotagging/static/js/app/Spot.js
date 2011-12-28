@@ -7,13 +7,14 @@ $$.Spot = Backbone.Model.extend({
     },
 
     toOpenLayers: function (){
-        return this.marker
-    }
+        return this.view.marker
+    },
+
 });
 
 $$.SpotCollection = Backbone.Collection.extend({
-    model: $$.Spot
-
+    model: $$.Spot,
+    layer: undefined
 });
 
 $$.SpotView = Backbone.View.extend({
@@ -32,12 +33,26 @@ $$.SpotView = Backbone.View.extend({
                 offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
             this.icon = new OpenLayers.Icon(this.model.attributes.style.externalGraphic, 
                                             size, offset);
-        }
+        };
 
+        this.model.layer.collection.bind("remove", this.remove);
+        this.model.layer.collection.bind("add", this.add);
     },
 
     getIcon: function(){
         return this.icon ? this.icon : this.model.layer.getIcon();
+    },
+
+    remove: function(spot){
+        spot.layer.toOpenLayers().removeMarker(spot.toOpenLayers());
+    },
+
+    add: function(spot, collection){
+        spot.layer = collection.layer
+        spot.view = new $$.SpotView({
+            model: spot
+        });
+        spot.view.render();
     },
 
     render: function () {
@@ -65,6 +80,8 @@ $$.Layer = Backbone.Model.extend({
         
         this.collection = options.collection ? options.collection : new $$.SpotCollection();
         this.icon = options.icon ? options.icon : 'http://www.openlayers.org/dev/img/marker.png';
+
+        this.collection.layer = this;
         
         /*
          * setup layer icon
@@ -129,9 +146,6 @@ $$.LayerView = Backbone.View.extend({
         
         // Add layer to map
         this.model.get('map').addLayer(this.layer);
-
-        // TODO: remove this
-        //this.model.get('map').addControl(new OpenLayers.Control.LayerSwitcher());
         
         /*
          * TEMPLATE
