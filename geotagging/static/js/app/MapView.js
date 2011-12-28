@@ -60,6 +60,7 @@ $$.MapView = Backbone.View.extend({
             "Google Streets", // the default
             {numZoomLevels: 20}
         ));
+
         // center the map
         this.map.setCenter(new OpenLayers.LonLat(this.settings.lng, this.settings.lat), 14);
 

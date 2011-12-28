@@ -26,7 +26,9 @@ $$.SpotView = Backbone.View.extend({
         _.bindAll(this, 'render');
         this.model.view = this;
         if ( this.model.attributes.style.externalGraphic ) {
-            var size = new OpenLayers.Size(21,25), 
+            var w = this.model.attributes.style.graphicWidth ? this.model.attributes.style.graphicWidth : 21;
+            var h = this.model.attributes.style.graphicHeight ? this.model.attributes.style.graphicHeight : 25;
+            var size = new OpenLayers.Size(w,h), 
                 offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
             this.icon = new OpenLayers.Icon(this.model.attributes.style.externalGraphic, 
                                             size, offset);
