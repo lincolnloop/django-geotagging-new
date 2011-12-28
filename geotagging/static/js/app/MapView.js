@@ -28,19 +28,20 @@ $$.MapCollection = Backbone.Collection.extend({
 
 $$.MapView = Backbone.View.extend({
     
-    settings: {
-        id: undefined,
-        el: undefined,
-        maxZoom: 14,
-        zoomLayer: undefined,
-        mapElemId: '',
-        layerEl: '',
-        static: false,
-    },
-
     initialize: function (options) {
+        log('MapView:initialize');
         _.bindAll(this, 'addOne');
         
+        this.settings = {
+            id: undefined,
+            el: undefined,
+            maxZoom: 14,
+            zoomLayer: undefined,
+            mapElemId: '',
+            layerEl: '',
+            static: false,
+        },
+
         this.collection.bind('add', this.addOne);
 
         /*
@@ -55,7 +56,7 @@ $$.MapView = Backbone.View.extend({
         //this.map = new google.maps.Map(this.el.get(0), map_options);
         this.settings.mapElemId = this.settings.mapElemId ? this.settings.mapElemId : 
             'placeholder-'+this.settings.id
-        log(this.settings.mapElemId)
+
         this.map = new OpenLayers.Map(this.settings.mapElemId);
         // add google maps base layer
         this.map.addLayer(new OpenLayers.Layer.Google(

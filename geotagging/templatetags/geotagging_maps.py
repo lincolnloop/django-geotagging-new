@@ -114,6 +114,7 @@ class MapJS(ttag.Tag):
 
         t = template.loader.get_template(template_name)
         map_id = counter and (prefix % counter) or prefix
+        print map_id
         
         return t.render(template.RequestContext(context['request'],
                                                 {'layers':layers, 'map_id':map_id,
