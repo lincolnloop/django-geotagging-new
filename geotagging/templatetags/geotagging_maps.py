@@ -21,6 +21,7 @@ class MapJS(ttag.Tag):
     class Meta:
         name = 'maps_js'
     
+    id = ttag.Arg()
     objects = ttag.Arg()
     zoom = ttag.Arg(required=False, keyword=True)
     static = ttag.Arg(required=False, keyword=True)
@@ -28,6 +29,7 @@ class MapJS(ttag.Tag):
             
     def render(self, context):
         data = self.resolve(context)
+        id = data.get('id', None)
         objects = data.get('objects', None)
         zoom = data.get('zoom', None)
         static = data.get('static', None) == "true"
@@ -81,18 +83,16 @@ class MapJS(ttag.Tag):
         layers = []
         
         for name, markers in sets.items():
-            show_map = bool(markers)
             for marker in markers:
                 marker['point'].srid = 4326
                 # obj = marker['object']
                 # marker['style']['gt_identifier'] = ('.'.join(("map-"+str(count),
                 #                                               obj.__class__.__name__,
                 #                                               str(obj.id))))
-
             layers.append({'name':name, 'items':markers})
 
         #map configuration
-        controls = not static and ['Navigation', 'PanZoom',] or [] 
+        #controls = not static and ['Navigation', 'PanZoom',] or [] 
         template_name = 'geotagging/maps_js.html'
         
         #if cluster:
@@ -101,18 +101,9 @@ class MapJS(ttag.Tag):
 
         t = template.loader.get_template(template_name)
         return t.render(template.RequestContext(context['request'],
-                                                {'layers':layers, 'map_count':count,
-                                                 'show_map':show_map}))
+                                                {'layers':layers, 'map_id':id}))
 
 register.tag(MapJS)
-
-
-class MapPlaceholder(ttag.Tag):
-    class Meta:
-        name = 'maps_js'
-
-    width = ttag.Arg(required=False, keyword=True)
-    height = ttag.Arg(required=False, keyword=True)
 
 
 """

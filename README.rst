@@ -37,6 +37,17 @@ Configuration
 =============
 
  * add `geottagging` to settings.INSTALLED_APPS 
+ * If you want the maps to be displayed, include the necessary javascript::
+   <!-- Map stuff -->
+   <script src="{{ STATIC_URL }}js/vendor/underscore.js" type="text/javascript" charset="utf-8"></script>
+   <script src="{{ STATIC_URL }}js/vendor/backbone.js" type="text/javascript" charset="utf-8"></script>
+   <script src="{{ STATIC_URL }}js/vendor/jquery.tmpl.js" type="text/javascript" charset="utf-8"></script>
+   <script src="http://openlayers.org/api/2.10/OpenLayers.js" type="text/javascript"></script>
+   <script src="http://maps.google.com/maps?file=api&v=2&key=AIzaSyDfzk8s9rszmBTAJVsZ8aLDdaRVwPyVqc4" type="text/javascript"></script>
+   <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
+   <script src="{{ STATIC_URL }}js/common/global.js" type="text/javascript"></script>
+   <script src="{{ STATIC_URL }}js/app/Spot.js" type="text/javascript" charset="utf-8"></script>
+   <script src="{{ STATIC_URL }}js/app/MapView.js" type="text/javascript" charset="utf-8"></script>
 
 =======
  Usage
@@ -236,15 +247,16 @@ Here's a basic template to include some maps::
 
     {% extends "base.html" %}
     {% load geotagging_maps %}
-    
-    {% block extra_head %}
-    {% geotagging_maps_api %}
-    <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js"></script>
-    {% endblock %}
-    
+        
     {% block content %}
-    <p>{% geotagging_map "55.6845043579,12.5735950447" %}</p>
-    <p>{% geotagging_map "59.32809,18.07740" 300 300 5 %}</p>
-    <p>{% geotagging_map attraction_list 300 300 %}</p>
+    <p>
+    <div id="map">
+       <div id="placeholder-map" style="height:400px"></div>
+    </div>
+    {% endblock %}
+
+    {% block js %} {# at the end of the page #}
+        {{ block.super }}
+        {% maps_js "map" items_to_be_mapped %}
     {% endblock %}
 

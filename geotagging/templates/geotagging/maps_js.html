@@ -1,18 +1,6 @@
-    <!-- Map stuff -->
-    <script src="{{ STATIC_URL }}js/vendor/underscore.js" type="text/javascript" charset="utf-8"></script>
-    <script src="{{ STATIC_URL }}js/vendor/backbone.js" type="text/javascript" charset="utf-8"></script>
-    <script src="{{ STATIC_URL }}js/vendor/jquery.tmpl.js" type="text/javascript" charset="utf-8"></script>
-    <script src="http://openlayers.org/api/2.10/OpenLayers.js" type="text/javascript"></script>
-    <script src="http://maps.google.com/maps?file=api&v=2&key=AIzaSyDfzk8s9rszmBTAJVsZ8aLDdaRVwPyVqc4" type="text/javascript"></script>
-    <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}js/common/global.js" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}js/app/Spot.js" type="text/javascript" charset="utf-8"></script>
-    <script src="{{ STATIC_URL }}js/app/MapView.js" type="text/javascript" charset="utf-8"></script>
-
-
     <script type="text/javascript">
         var map = new $$.Map({
-            id: "map{{ map_count }}",
+            id: "{{ map_id }}",
         })
         $$.maps.add(map);
 
@@ -23,10 +11,10 @@
             collection: new $$.SpotCollection([
                {% for spot in layer.items %}
                {
-                    id: "{{ spot.pk }}",
+                    id: "{% if spot.object %}{{ spot.object.pk }}{% else %}{{ forloop.counter }}{% endif %}",
                     lng: {{ spot.point.x }},
                     lat: {{ spot.point.y }},
-                    style: {{ spot.style }},
+                    style: {{ spot.style|safe }},
                     title: "{{ spot.display }}",
                 }, 
                {% endfor %}
