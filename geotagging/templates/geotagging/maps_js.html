@@ -1,6 +1,12 @@
+{% if options.simple %}
+<div id="geotagging_{{ map_id }}">
+  <div id="placeholder-geotagging_{{ map_id }}" style="height:{{options.height}}px; width:{{options.width}}px"></div>
+</div>
+{% endif %}
+
     <script type="text/javascript">
         var map = new $$.Map({
-            id: "{{ map_id }}",
+        id: "{% if options.simple %}geotagging_{% endif %}{{ map_id }}",
             static: {% if options.static %}true{% else %}false{% endif %},
         })
         $$.maps.add(map);

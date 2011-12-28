@@ -29,6 +29,9 @@ class MapJS(ttag.Tag):
     static = ttag.Arg(required=False, keyword=True)
     center_on = ttag.Arg(required=False, keyword=True)
     cluster = ttag.Arg(required=False, keyword=True)
+    simple = ttag.Arg(required=False, keyword=True)
+    width = ttag.Arg(required=False, keyword=True)
+    height = ttag.Arg(required=False, keyword=True)
             
     def render(self, context):
         data = self.resolve(context)
@@ -39,6 +42,9 @@ class MapJS(ttag.Tag):
         static = data.get('static', None) == "true"
         center_on = data.get('center_on', None)
         cluster = data.get('extra', None) == "true"
+        simple = data.get('simple', None) == "true"
+        width = data.get('width', 200)
+        height = data.get('height', 200)
 
         # This should go to cache or use context.render_context
         context['request'].session['geotagging_map_counter'] = (
@@ -99,7 +105,8 @@ class MapJS(ttag.Tag):
         #map configuration
         template_name = 'geotagging/maps_js.html'
 
-        options = {'static':static, 'center_on':center_on}
+        options = {'static':static, 'center_on':center_on, 'simple':simple,
+                   'width':width, 'height':height}
         
         #if cluster:
         #    options.extend({ 'cluster': True,
