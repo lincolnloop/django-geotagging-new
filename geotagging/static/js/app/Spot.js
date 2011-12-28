@@ -34,25 +34,10 @@ $$.SpotView = Backbone.View.extend({
             this.icon = new OpenLayers.Icon(this.model.attributes.style.externalGraphic, 
                                             size, offset);
         };
-
-        this.model.layer.collection.bind("remove", this.remove);
-        this.model.layer.collection.bind("add", this.add);
     },
 
     getIcon: function(){
         return this.icon ? this.icon : this.model.layer.getIcon();
-    },
-
-    remove: function(spot){
-        spot.layer.toOpenLayers().removeMarker(spot.toOpenLayers());
-    },
-
-    add: function(spot, collection){
-        spot.layer = collection.layer
-        spot.view = new $$.SpotView({
-            model: spot
-        });
-        spot.view.render();
     },
 
     render: function () {
@@ -115,6 +100,22 @@ $$.LayerView = Backbone.View.extend({
         _.bindAll(this, 'render');
         
         this.model.view = this;
+        this.model.collection.bind("remove", this.remove);
+        this.model.collection.bind("add", this.add);
+    },
+
+    remove: function(spot){
+        //This is bound to a collection
+        this.layer.toOpenLayers().removeMarker(spot.toOpenLayers());
+    },
+
+    add: function(spot, collection){
+        //This is bound to a collection
+        spot.layer = this.layer
+        spot.view = new $$.SpotView({
+            model: spot
+        });
+        spot.view.render();
     },
 
     render: function () {
