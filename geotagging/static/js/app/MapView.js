@@ -13,12 +13,13 @@ $$.Map = Backbone.Model.extend({
 
         $.extend(viewOptions, options);
         this.view = new $$.MapView(viewOptions);
+        this.view.model = this;
     },
     
     toOpenLayers: function (){
         return this.view.map
-    }
-    
+    },
+
 });
 
 $$.MapCollection = Backbone.Collection.extend({
@@ -32,6 +33,8 @@ $$.MapView = Backbone.View.extend({
         lat: 51.50121,
         lng: -0.12489,
         el: undefined,
+        maxZoom: 14,
+        zoomLayer: undefined,
         mapElemId: '',
         layerEl: ''
     },
@@ -63,10 +66,6 @@ $$.MapView = Backbone.View.extend({
 
         // center the map
         this.map.setCenter(new OpenLayers.LonLat(this.settings.lng, this.settings.lat), 14);
-
-        // map events
-        $(document).bind('maps:center', this.centerMap);
-        $(document).bind('maps:sortChange', this.sortChange);
     },
 
     addOne: function (layer) {
@@ -83,7 +82,28 @@ $$.MapView = Backbone.View.extend({
         this.settings.layerEl.append(view.render().el);
         
         return this;
+    },
+
+    center: function(onLayer){
+        if (onLayer){
+            var bounds = this.model.collection.get(onLayer).toOpenLayers().getDataExtent();
+        }else{
+            var bounds = undefined;
+            this.model.collection.each(function(layer){
+                if (_.isUndefined(bounds)){
+                    bounds = layer.toOpenLayers().getDataExtent();
+                }else{
+                    bounds.extend(layer.toOpenLayers().getDataExtent());
+                }
+            });
+        }
+        var olMap = this.model.toOpenLayers();
+        olMap.zoomToExtent(bounds);
+        if ( olMap.zoom > this.settings.maxZoom ){
+            olMap.zoomTo(this.settings.maxZoom);
+        }
     }
+
 
 });
 
