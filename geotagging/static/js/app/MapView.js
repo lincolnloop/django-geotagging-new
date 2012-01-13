@@ -18,7 +18,7 @@ $$.Map = Backbone.Model.extend({
     
     toOpenLayers: function (){
         return this.view.map
-    },
+    }
 
 });
 
@@ -39,8 +39,8 @@ $$.MapView = Backbone.View.extend({
             zoomLayer: undefined,
             mapElemId: '',
             layerEl: '',
-            static: false,
-        },
+            static: false
+        };
 
         this.collection.bind('add', this.addOne);
 
@@ -64,7 +64,7 @@ $$.MapView = Backbone.View.extend({
             {numZoomLevels: 20}
         ));
 
-        if ( this.settings.static ){
+        if (this.settings.static){
             $(this.map.controls).each(function(i, control){
                 control.deactivate(); 
                 this.map.removeControl(control)});
@@ -89,21 +89,22 @@ $$.MapView = Backbone.View.extend({
     },
 
     center: function(onLayer){
+        var bounds;
+        
         if (onLayer){
-            var bounds = this.model.collection.get(onLayer).toOpenLayers().getDataExtent();
-        }else{
-            var bounds = undefined;
+            bounds = this.model.collection.get(onLayer).toOpenLayers().getDataExtent();
+        } else {
             this.model.collection.each(function(layer){
-                if (_.isUndefined(bounds)){
+                if (_.isUndefined(bounds)) {
                     bounds = layer.toOpenLayers().getDataExtent();
-                }else{
+                } else {
                     bounds.extend(layer.toOpenLayers().getDataExtent());
                 }
             });
         }
         var olMap = this.model.toOpenLayers();
         olMap.zoomToExtent(bounds);
-        if ( olMap.zoom > this.settings.maxZoom ){
+        if (olMap.zoom > this.settings.maxZoom) {
             olMap.zoomTo(this.settings.maxZoom);
         }
     }
@@ -111,4 +112,4 @@ $$.MapView = Backbone.View.extend({
 
 });
 
-$$.maps = new $$.MapCollection()
+$$.maps = new $$.MapCollection();

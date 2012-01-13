@@ -3,12 +3,22 @@ $$.Spot = Backbone.Model.extend({
     layer: undefined,
 
     initialize: function (options) {
-        _.bindAll(this);
+        _.bindAll(this, 'getLatLng');
+        
+        return this;
     },
 
-    toOpenLayers: function (){
-        return this.view.marker
+    toOpenLayers: function () {
+        return this.view.marker;
     },
+    
+    getLatLng: function () {
+        if (!this.latLng) {
+            this.latLng = new OpenLayers.LonLat(this.get('lng'), this.get('lat'));
+        }
+        
+        return this.latLng;
+    }
 
 });
 
@@ -23,10 +33,10 @@ $$.SpotView = Backbone.View.extend({
 
     events: {},
 
-    initialize: function(options) {
+    initialize: function (options) {
         _.bindAll(this, 'render');
         this.model.view = this;
-        if ( this.model.attributes.style.externalGraphic ) {
+        if (this.model.attributes.style.externalGraphic) {
             var w = this.model.attributes.style.graphicWidth ? this.model.attributes.style.graphicWidth : 21;
             var h = this.model.attributes.style.graphicHeight ? this.model.attributes.style.graphicHeight : 25;
             var size = new OpenLayers.Size(w,h), 
@@ -36,14 +46,15 @@ $$.SpotView = Backbone.View.extend({
         };
     },
 
-    getIcon: function(){
+    getIcon: function () {
         return this.icon ? this.icon : this.model.layer.getIcon();
     },
 
     render: function () {
         this.marker = new OpenLayers.Marker(
-            new OpenLayers.LonLat(this.model.get('lng'), this.model.get('lat')), 
+            this.model.getLatLng(), 
             this.getIcon().clone());
+        
         this.model.layer.toOpenLayers().addMarker(this.marker);
         return this;
     }
@@ -54,10 +65,6 @@ $$.SpotView = Backbone.View.extend({
 $$.Layer = Backbone.Model.extend({
     
     map: undefined,
-
-    getIcon: function() {
-        return this.icon;
-    },
     
     initialize: function (options) {
         log('init:layer');
@@ -76,9 +83,13 @@ $$.Layer = Backbone.Model.extend({
         
         this.icon = new OpenLayers.Icon(this.icon, size, offset);
     },
+
+    getIcon: function () {
+        return this.icon;
+    },
     
-    toOpenLayers: function (){
-        return this.view.layer
+    toOpenLayers: function () {
+        return this.view.layer;
     }
     
 });
@@ -111,7 +122,7 @@ $$.LayerView = Backbone.View.extend({
 
     add: function(spot, collection){
         //This is bound to a collection
-        spot.layer = this.layer
+        spot.layer = this.layer;
         spot.view = new $$.SpotView({
             model: spot
         });
@@ -141,7 +152,7 @@ $$.LayerView = Backbone.View.extend({
             var view = new $$.SpotView({
                 model: spot
             });
-            view.render()
+            view.render();
         }, this);
 
         
