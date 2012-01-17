@@ -63,6 +63,7 @@ $$.SpotView = Backbone.View.extend({
         });
         this.feature.data.popupContentHTML = '<h2>test</h2><p>Hello World!</p>';
         this.feature.data.overflow = "auto";
+        this.feature.data.icon = this.getIcon();
         
         // create the marker
         this.marker = this.feature.createMarker();
