@@ -34,7 +34,7 @@ $$.SpotView = Backbone.View.extend({
     events: {},
 
     initialize: function (options) {
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render', 'markerClick');
         this.model.view = this;
         if (this.model.attributes.style.externalGraphic) {
             var w = this.model.attributes.style.graphicWidth ? this.model.attributes.style.graphicWidth : 21;
@@ -51,12 +51,41 @@ $$.SpotView = Backbone.View.extend({
     },
 
     render: function () {
-        this.marker = new OpenLayers.Marker(
-            this.model.getLatLng(), 
-            this.getIcon().clone());
+        //
+        // feature is used to create a marker or a popup
+        //
+        this.feature = new OpenLayers.Feature(this.model.layer.toOpenLayers(), this.model.getLatLng());
         
+        // popup attributes
+        this.feature.closeBox = true;
+        this.feature.popupClass = OpenLayers.Class(OpenLayers.Popup.Anchored, {
+            'autoSize': true
+        });
+        this.feature.data.popupContentHTML = '<h2>test</h2><p>Hello World!</p>';
+        this.feature.data.overflow = "auto";
+        
+        // create the marker
+        this.marker = this.feature.createMarker();
         this.model.layer.toOpenLayers().addMarker(this.marker);
+        
+        this.marker.events.register("mousedown", this.feature, this.markerClick);
+        
         return this;
+    },
+    
+    markerClick: function (event) {
+        log('Spot:markerClick');
+        
+        log(this.model.layer.get('map'));
+        
+        if (this.popup == null) {
+            this.popup = this.feature.createPopup();
+            this.model.layer.get('map').addPopup(this.popup);
+            this.popup.show();
+        } else {
+            this.popup.toggle();
+        }
+        OpenLayers.Event.stop(event);
     }
 
 });
