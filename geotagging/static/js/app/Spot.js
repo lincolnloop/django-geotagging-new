@@ -54,8 +54,6 @@ $$.SpotView = Backbone.View.extend({
         this.marker = new OpenLayers.Marker(
             this.model.getLatLng(), 
             this.getIcon().clone());
-        
-        this.model.layer.toOpenLayers().addMarker(this.marker);
         return this;
     }
 
@@ -126,7 +124,7 @@ $$.LayerView = Backbone.View.extend({
         spot.view = new $$.SpotView({
             model: spot
         });
-        spot.view.render();
+        this.layer.addMarker(spot.view.render().marker);
     },
 
     render: function () {
