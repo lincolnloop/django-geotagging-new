@@ -61,7 +61,7 @@ $$.SpotView = Backbone.View.extend({
         this.feature.popupClass = OpenLayers.Class(OpenLayers.Popup.Anchored, {
             'autoSize': true
         });
-        this.feature.data.popupContentHTML = '<h2>test</h2><p>Hello World!</p>';
+        this.feature.data.popupContentHTML = this.model.get('title');
         this.feature.data.overflow = "auto";
         this.feature.data.icon = this.getIcon();
         
