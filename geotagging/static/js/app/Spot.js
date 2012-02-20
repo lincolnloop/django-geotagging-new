@@ -34,6 +34,7 @@ $$.SpotView = Backbone.View.extend({
     events: {},
 
     initialize: function (options) {
+        log('spotView:initialize')
         _.bindAll(this, 'render', 'markerClick');
         this.model.view = this;
         if (this.model.attributes.style.externalGraphic) {
@@ -198,7 +199,7 @@ $$.LayerView = Backbone.View.extend({
         //log(this.model.toJSON());
         
         $(this.el).html(template);
-        
+
         return this;
     },
     

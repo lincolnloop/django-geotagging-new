@@ -36,6 +36,7 @@ $$.MapView = Backbone.View.extend({
             id: undefined,
             el: undefined,
             maxZoom: 14,
+            minZoom: 5,
             zoomLayer: undefined,
             mapElemId: '',
             layerEl: '',
@@ -95,17 +96,27 @@ $$.MapView = Backbone.View.extend({
             bounds = this.model.collection.get(onLayer).toOpenLayers().getDataExtent();
         } else {
             this.model.collection.each(function(layer){
-                if (_.isUndefined(bounds)) {
-                    bounds = layer.toOpenLayers().getDataExtent();
-                } else {
-                    bounds.extend(layer.toOpenLayers().getDataExtent());
+                var current_bounds = layer.toOpenLayers().getDataExtent();
+                if ( current_bounds != null ){ 
+                    if (_.isUndefined(bounds)) {
+                        bounds = current_bounds;
+                    } else {
+                        bounds.extend(current_bounds);
+                    }
                 }
             });
         }
         var olMap = this.model.toOpenLayers();
-        olMap.zoomToExtent(bounds);
+        if ( _.isUndefined(bounds) ){
+            olMap.setCenter( new OpenLayers.LonLat(0,0) );
+        }else{
+            olMap.zoomToExtent(bounds);
+        }
         if (olMap.zoom > this.settings.maxZoom) {
             olMap.zoomTo(this.settings.maxZoom);
+        }
+        if (olMap.zoom < this.settings.minZoom) {
+            olMap.zoomTo(this.settings.minZoom);
         }
     }
 
