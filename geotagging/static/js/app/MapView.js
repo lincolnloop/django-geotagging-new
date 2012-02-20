@@ -110,7 +110,7 @@ $$.MapView = Backbone.View.extend({
                     item.style.graphicWidth = 27;
                     layer.collection.add(new $$.Spot(item));
                     layer.collection.remove(spot);
-                    $('.map-legend#'+item.id).attr("class", "map-legend number"+(numbering < 10 ? "0"+numbering : numbering));
+                    $('.map-legend.id'+item.id).attr("class", "map-legend number"+(numbering < 10 ? "0"+numbering : numbering));
                     numbering += 1;
                 });
             });
