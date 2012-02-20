@@ -89,6 +89,38 @@ $$.MapView = Backbone.View.extend({
         return this;
     },
 
+    enumerate: function(options){
+        options = options || {}
+        var _this = this
+        if ( options.layers ){
+            options.color = options.color || 'red'
+            var numbering = 1
+            $(options.layers).each(function(i, layer_name){ 
+                var layer = _this.collection.get(layer_name);
+                var old = $(_.toArray(layer.collection).slice(0))
+                old.each(function(j, spot){ 
+                    var item = {id: spot.attributes.id,
+                                lng: spot.attributes.lng,
+                                lat: spot.attributes.lat,
+                                style: {},
+                                number: numbering,
+                                title: spot.attributes.title};
+                    item.style.externalGraphic = 'http://google-maps-icons.googlecode.com/files/'+options.color+(numbering < 10 ? "0"+numbering : numbering)+'.png';
+                    item.style.graphicHeight = 27;
+                    item.style.graphicWidth = 27;
+                    layer.collection.add(new $$.Spot(item));
+                    layer.collection.remove(spot);
+                    numbering += 1;
+                    $('.map-legend#'+item.id).html(item.number)
+                });
+            });
+        }else if ( options.collection ){
+            options.collection.each(function(i, object){
+                log(object)
+            });
+        }
+    },
+
     center: function(onLayer){
         var bounds;
         

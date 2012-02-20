@@ -5,6 +5,9 @@
 {% endif %}
 
     <script type="text/javascript">
+    var object = {};
+    _.extend(object, Backbone.Events);
+
     $(document).ready(function() {
         var map = new $$.Map({
         id: "{% if options.simple %}geotagging_{% endif %}{{ map_id }}",
@@ -35,5 +38,6 @@
         map.view.center();
         {% endif %}
         log('created {{map_id}}');
+        object.trigger('map_ready');
     });
     </script>
