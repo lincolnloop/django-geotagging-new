@@ -44,7 +44,7 @@ $$.SpotView = Backbone.View.extend({
                 offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
             this.icon = new OpenLayers.Icon(this.model.attributes.style.externalGraphic, 
                                             size, offset);
-        };
+        }
     },
 
     getIcon: function () {
