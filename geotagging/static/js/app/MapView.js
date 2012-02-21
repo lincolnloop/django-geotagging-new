@@ -37,9 +37,11 @@ $$.MapView = Backbone.View.extend({
             el: undefined,
             maxZoom: 14,
             minZoom: 5,
+            defaultZoom: 7,
             zoomLayer: undefined,
             mapElemId: '',
             layerEl: '',
+            center: {lon:0,lat:0},
             static: false
         };
 
@@ -140,7 +142,9 @@ $$.MapView = Backbone.View.extend({
         }
         var olMap = this.model.toOpenLayers();
         if ( _.isUndefined(bounds) ){
-            olMap.setCenter( new OpenLayers.LonLat(0,0) );
+            olMap.setCenter( new OpenLayers.LonLat(this.settings.center.lon, 
+                                                   this.settings.center.lat) );
+            olMap.zoomTo(this.settings.defaultZoom);
         }else{
             olMap.zoomToExtent(bounds);
         }
