@@ -34,7 +34,6 @@ $$.SpotView = Backbone.View.extend({
     events: {},
 
     initialize: function (options) {
-        log('spotView:initialize')
         _.bindAll(this, 'render', 'markerClick');
         this.model.view = this;
         if (this.model.attributes.style.externalGraphic) {
