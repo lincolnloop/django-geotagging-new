@@ -154,7 +154,16 @@ $$.MapView = Backbone.View.extend({
         if (olMap.zoom < this.settings.minZoom) {
             olMap.zoomTo(this.settings.minZoom);
         }
-    }
+    },
+
+    remove: function(layerName){
+        //This is bound to a collection
+        var layer = this.collection.get(layerName);
+        var old = $(_.toArray(layer.collection).slice(0))
+        old.each(function(i, spot){
+            layer.collection.remove(spot);
+        });
+    },
 
 
 });
