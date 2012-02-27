@@ -37,6 +37,10 @@
         {% else %}
         map.view.center();
         {% endif %}
+        {% if options.enumerate %}
+        map.view.enumerate({{ options.enumerate }});
+        {% endif %}
+
         log('created {{map_id}}');
         object.trigger('map_ready');
     });
