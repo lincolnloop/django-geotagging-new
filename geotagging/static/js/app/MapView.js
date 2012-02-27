@@ -110,8 +110,8 @@ $$.MapView = Backbone.View.extend({
                     item.style.externalGraphic = 'http://google-maps-icons.googlecode.com/files/'+options.color+(numbering < 10 ? "0"+numbering : numbering)+'.png';
                     item.style.graphicHeight = 27;
                     item.style.graphicWidth = 27;
-                    layer.collection.add(new $$.Spot(item));
                     layer.collection.remove(spot);
+                    layer.collection.add(new $$.Spot(item));
                     $('.map-legend.id'+item.id).attr("class", "map-legend number"+(numbering < 10 ? "0"+numbering : numbering));
                     numbering += 1;
                 });

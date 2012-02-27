@@ -76,7 +76,6 @@ $$.SpotView = Backbone.View.extend({
     
     markerClick: function (event) {
         log('Spot:markerClick');
-        
         log(this.model.layer.get('map'));
         
         if (this.popup == null) {
