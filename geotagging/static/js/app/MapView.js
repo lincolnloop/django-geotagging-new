@@ -93,9 +93,9 @@ $$.MapView = Backbone.View.extend({
 
     enumerate: function(options){
         options = options || {}
+        options.color = options.color || 'red'
         var _this = this
         if ( options.layers ){
-            options.color = options.color || 'red'
             var numbering = 1
             $(options.layers).each(function(i, layer_name){ 
                 var layer = _this.collection.get(layer_name);
@@ -112,13 +112,29 @@ $$.MapView = Backbone.View.extend({
                     item.style.graphicWidth = 27;
                     layer.collection.remove(spot);
                     layer.collection.add(new $$.Spot(item));
-                    $('.map-legend.id'+item.id).attr("class", "map-legend number"+(numbering < 10 ? "0"+numbering : numbering));
+                    $('.map-legend.id'+item.id).attr("class", "map-legend id"+item.id+" number"+(numbering < 10 ? "0"+numbering : numbering));
                     numbering += 1;
                 });
             });
         }else if ( options.collection ){
-            options.collection.each(function(i, object){
-                log(object)
+            var layer = this.collection.get(options.layer_name);
+            var numbering = 1;
+            _.map(options.collection, function(object, i){
+                var spot = layer.collection.get(object.id)
+                if ( spot.attributes.number ){ return; }
+                var item = {id: spot.attributes.id,
+                            lng: spot.attributes.lng,
+                            lat: spot.attributes.lat,
+                            style: {},
+                            number: numbering,
+                            title: spot.attributes.title};
+                item.style.externalGraphic = 'http://google-maps-icons.googlecode.com/files/'+options.color+(numbering < 10 ? "0"+numbering : numbering)+'.png';
+                item.style.graphicHeight = 27;
+                item.style.graphicWidth = 27;
+                layer.collection.remove(spot);
+                layer.collection.add(new $$.Spot(item));
+                $('.map-legend.id'+item.id).attr("class", "map-legend id"+item.id+" number"+(numbering < 10 ? "0"+numbering : numbering));
+                numbering += 1;
             });
         }
     },
