@@ -121,7 +121,7 @@ $$.MapView = Backbone.View.extend({
             var numbering = 1;
             _.map(options.collection, function(object, i){
                 var spot = layer.collection.get(object.id)
-                if ( spot.attributes.number ){ return; }
+                if ( _.isUndefined(spot) || spot.attributes.number ){ return; }
                 var item = {id: spot.attributes.id,
                             lng: spot.attributes.lng,
                             lat: spot.attributes.lat,
