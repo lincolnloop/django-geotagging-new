@@ -5,10 +5,11 @@
 {% endif %}
 
     <script type="text/javascript">
-    var object = {};
-    _.extend(object, Backbone.Events);
 
     $(document).ready(function() {
+        object = {};
+        _.extend(object, Backbone.Events);
+
         var map = new $$.Map({
         id: "{% if options.simple %}geotagging_{% endif %}{{ map_id }}",
             static: {% if options.static %}true{% else %}false{% endif %},
