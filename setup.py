@@ -8,7 +8,7 @@ setup(
     author='Nicolas Lara',
     author_email='nicolaslara@gmail.com',
     url='https://github.com/lincolnloop/django-geotagging-new',
-    package_data={'geotagging': ['static/geotagging/js/*.js', 'templates/geotagging/*.html', 'templates/olwidget/*.html']},
+    package_data={'geotagging': ['static/js/*.js', 'templates/geotagging/*.html', 'templates/olwidget/*.html']},
     requires = ['django (>=1.3)'],
     packages=find_packages(),
     classifiers=[
